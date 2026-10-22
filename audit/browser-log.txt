@@ -1,0 +1,79 @@
+axe hi-360 start: clean
+hi-360 screen 1 [types] "सवाल 1 / अधिकतम 8" 6 options, page 964px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 types: clean
+hi-360 screen 2 [about] "सवाल 2 / अधिकतम 8" 3 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 about: clean
+hi-360 screen 3 [category] "सवाल 3 / अधिकतम 8" 11 options, page 1222px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 category: clean
+hi-360 screen 4 [income] "सवाल 4 / अधिकतम 8" 7 options, page 868px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 income: clean
+hi-360 screen 5 [occupation] "सवाल 5 / अधिकतम 8" 10 options, page 1148px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 occupation: clean
+hi-360 screen 6 [disability] "सवाल 6 / अधिकतम 8" 6 options, page 829px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 disability: clean
+hi-360 screen 7 [event] "सवाल 7 / अधिकतम 8" 15 options, page 1590px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 event: clean
+hi-360 screen 8 [residence] "सवाल 8 / अधिकतम 8" 5 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe hi-360 residence: clean
+hi-360 RESULTS: 16योजनाओं के लिए आप पात्र दिखते हैं16योजनाओं की कार्यालय से पुष्टि करें | 59 cards | 15654px tall (20 screens of scrolling) | 0/59 benefit lines contain Devanagari | fonts: Mukta 400, Mukta 400, Mukta 400, Mukta 500, Mukta 500, Mukta 700, Mukta 700, Mukta 700, Mukta 800, Mukta 800, Mukta 800
+hi-360 first cards: पौधगिरी (स्कूल पौधारोपण अभियान) / निःशुल्क/रियायती पौध वितरण / वन मित्र योजना / विधायक आदर्श नगर एवं ग्राम योजना / हरियाणा ग्रामीण विकास प्राधिकरण – नियोजित ग्रामीण विकास
+hi-360 html lang attribute: hi; text under 15px: {"SMALL":13,"stamp pending":11,"meta":14,"stamp":11}
+hi-360 print PDF written
+axe hi-360 results(open): clean
+axe en-dark-360 start: clean
+en-dark-360 screen 1 [types] "Question 1 of up to 8" 6 options, page 982px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 types: clean
+en-dark-360 screen 2 [about] "Question 2 of up to 8" 3 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 about: clean
+en-dark-360 screen 3 [category] "Question 3 of up to 8" 11 options, page 1261px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 category: clean
+en-dark-360 screen 4 [income] "Question 4 of up to 8" 7 options, page 892px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 income: clean
+en-dark-360 screen 5 [occupation] "Question 5 of up to 8" 14 options, page 1545px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 occupation: clean
+en-dark-360 screen 6 [disability] "Question 6 of up to 8" 6 options, page 829px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 disability: clean
+en-dark-360 screen 7 [event] "Question 7 of up to 8" 12 options, page 1513px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 event: clean
+en-dark-360 screen 8 [residence] "Question 8 of up to 8" 5 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-dark-360 residence: clean
+en-dark-360 RESULTS: 39you appear eligible for15to check with the office | 73 cards | 24874px tall (31 screens of scrolling) | 0/73 benefit lines contain Devanagari | fonts: Mukta 400, Mukta 400, Mukta 400, Mukta 500, Mukta 500, Mukta 700, Mukta 700, Mukta 700, Mukta 800, Mukta 800
+en-dark-360 first cards: Meri Fasal Mera Byora (MFMB) – Unified farmer/crop registrat / Agriculture Infrastructure Funds Scheme (AIF) / Pradhan Mantri Fasal Bima Yojana (PMFBY) / Soil Health Card (SHC)- Har Khet Swasth Khet / Mera Pani Meri Virasat (MPMV)
+en-dark-360 html lang attribute: en; text under 15px: {"SMALL":13,"stamp":11,"meta":14,"stamp pending":11}
+axe en-dark-360 results(open): clean
+hi-dark-320 screen 1 [types] "सवाल 1 / अधिकतम 8" 6 options, page 1006px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 2 [about] "सवाल 2 / अधिकतम 8" 3 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 3 [category] "सवाल 3 / अधिकतम 8" 11 options, page 1242px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 4 [income] "सवाल 4 / अधिकतम 8" 7 options, page 868px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 5 [occupation] "सवाल 5 / अधिकतम 8" 14 options, page 1467px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 6 [disability] "सवाल 6 / अधिकतम 8" 6 options, page 829px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 7 [event] "सवाल 7 / अधिकतम 8" 12 options, page 1482px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 screen 8 [residence] "सवाल 8 / अधिकतम 8" 5 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+hi-dark-320 RESULTS: 39योजनाओं के लिए आप पात्र दिखते हैं15योजनाओं की कार्यालय से पुष्टि करें | 73 cards | 26984px tall (34 screens of scrolling) | 0/73 benefit lines contain Devanagari | fonts: Mukta 400, Mukta 400, Mukta 400, Mukta 500, Mukta 500, Mukta 700, Mukta 700, Mukta 700, Mukta 800, Mukta 800
+hi-dark-320 first cards: मेरी फसल मेरा ब्यौरा – किसान व फसल पंजीकरण / कृषि अवसंरचना कोष योजना / प्रधानमंत्री फसल बीमा योजना / मृदा स्वास्थ्य कार्ड – हर खेत स्वस्थ खेत / मेरा पानी मेरी विरासत
+hi-dark-320 html lang attribute: hi; text under 15px: {"SMALL":13,"stamp":11,"meta":14,"stamp pending":11}
+axe en-320 start: clean
+en-320 screen 1 [types] "Question 1 of up to 8" 6 options, page 1044px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 types: serious:color-contrast(8)
+en-320 screen 2 [about] "Question 2 of up to 8" 3 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 about: clean
+en-320 screen 3 [category] "Question 3 of up to 8" 11 options, page 1300px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 category: clean
+en-320 screen 4 [income] "Question 4 of up to 8" 7 options, page 892px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 income: clean
+en-320 screen 5 [occupation] "Question 5 of up to 8" 10 options, page 1226px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 occupation: clean
+en-320 screen 6 [disability] "Question 6 of up to 8" 6 options, page 829px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 disability: clean
+en-320 screen 7 [event] "Question 7 of up to 8" 15 options, page 1892px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 event: clean
+en-320 screen 8 [residence] "Question 8 of up to 8" 5 options, page 800px tall SMALL:BUTTON:हिं 42x40,BUTTON:EN 49x40
+axe en-320 residence: clean
+en-320 RESULTS: 16you appear eligible for16to check with the office | 59 cards | 18830px tall (24 screens of scrolling) | 0/59 benefit lines contain Devanagari | fonts: Mukta 400, Mukta 400, Mukta 400, Mukta 500, Mukta 500, Mukta 700, Mukta 700, Mukta 700, Mukta 800, Mukta 800, Mukta 800
+en-320 first cards: Paudhagiri (School Plantation Drive) / Free/Concessional Sapling Supply (Public) / Van Mitra Scheme (Gazette Notification 30.07.2024) / Vidhayak Adarsh Nagar Avam Gram Yojana (VANGY) / Haryana Rural Development Authority (HRDA) – Regulated Rural
+en-320 html lang attribute: en; text under 15px: {"SMALL":13,"stamp pending":11,"meta":14,"stamp":11}
+axe en-320 results(open): clean
+
+AXE UNIQUE: {}
+error message shown when nothing chosen: "आगे बढ़ने के लिए एक जवाब चुनें।"
+browser Back button from question 2 lands on: about:blank / has start button: false / still on question: false
