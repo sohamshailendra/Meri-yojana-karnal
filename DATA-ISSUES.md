@@ -15,6 +15,7 @@ undo them.
 | HLTH-003 RBSK child screening | Max age | none | 18 | Text: "Children 0–18 years". Was shown to adults. |
 | AH-003 Livestock insurance | Canonical documents | includes *death certificate* | removed | The certificate is the animal's; the combined checklist told farmers to bring a death certificate. |
 | FOR-005 Farm forestry (clonal seedlings) | Canonical documents | includes *caste* and *disability* certificate | removed | Listed "as applicable" for subsidy slabs; the checklist demanded them of every farmer. |
+| SEWA-006 Assistance to widowers & unmarried persons | Special situation | none | `widower` | Text: "Widower age ≥ 40 … Unmarried 45–60, never married". Without the marker every man aged 40–60 was shown it as "yes, unless". The page now asks for it on the situations screen. |
 
 ## Hindi text (decision taken: leave in English for now)
 

@@ -158,11 +158,11 @@
   }
  },
  "farmer45": {
-  "questions": "about > category > income > occupation > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 38,
-  "check": 14,
-  "event": 18,
+  "check": 13,
+  "event": 19,
   "docs": [
    "ppp",
    "aadhaar",
@@ -217,7 +217,6 @@
    "AGR-010": "check [exclusion]",
    "AH-002": "check [gap]",
    "SEWA-005": "check [income_border,exclusion]",
-   "SEWA-006": "check [exclusion]",
    "SPT-003": "check [gap]",
    "DIC-004": "check [gap]",
    "FCS-001": "check [gap]",
@@ -228,6 +227,7 @@
    "AGR-001": "event",
    "WCD-002": "event",
    "WCD-003": "event",
+   "SEWA-006": "event [res_unknown,exclusion]",
    "HLTH-002": "event",
    "HLTH-004": "event",
    "TPT-001": "event",
@@ -437,11 +437,11 @@
   }
  },
  "vendor50_unk": {
-  "questions": "about > category > income > occupation > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 7,
-  "check": 13,
-  "event": 18,
+  "check": 12,
+  "event": 19,
   "docs": [
    "ppp",
    "aadhaar",
@@ -458,7 +458,6 @@
    "RD-001": "check [gap]",
    "RCS-001": "check [gap]",
    "SEWA-005": "check [income_unknown,exclusion]",
-   "SEWA-006": "check [income_unknown,exclusion]",
    "SPT-003": "check [gap]",
    "FCS-001": "check [gap]",
    "NRE-005": "check [income_unknown,gap]",
@@ -471,6 +470,7 @@
    "WCD-001": "event [income_unknown,gap]",
    "WCD-002": "event",
    "WCD-003": "event",
+   "SEWA-006": "event [income_unknown,res_unknown,exclusion]",
    "HLTH-002": "event",
    "HLTH-004": "event",
    "TPT-001": "event [income_unknown]",
@@ -1012,11 +1012,11 @@
   }
  },
  "dis_border40": {
-  "questions": "about > category > income > occupation > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 9,
-  "check": 6,
-  "event": 17,
+  "check": 5,
+  "event": 18,
   "docs": [
    "ppp",
    "aadhaar",
@@ -1033,7 +1033,6 @@
    "RD-012": "eligible",
    "HLTH-007": "eligible",
    "REV-002": "eligible",
-   "SEWA-006": "check [exclusion]",
    "FCS-001": "check [gap]",
    "NRE-005": "check [gap]",
    "EMP-002": "check [gap]",
@@ -1041,6 +1040,7 @@
    "DLSA-002": "check [gap]",
    "WCD-002": "event",
    "WCD-003": "event",
+   "SEWA-006": "event [res_unknown,exclusion]",
    "HLTH-002": "event",
    "HLTH-004": "event",
    "TPT-001": "event",
@@ -2041,11 +2041,11 @@
   }
  },
  "household_only": {
-  "questions": "about > category > income > occupation > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 10,
-  "check": 5,
-  "event": 4,
+  "check": 4,
+  "event": 5,
   "docs": [
    "ppp",
    "aadhaar",
@@ -2067,11 +2067,11 @@
    "FCS-004": "eligible",
    "REV-002": "eligible",
    "RD-001": "check [gap]",
-   "SEWA-006": "check [exclusion]",
    "FCS-001": "check [gap]",
    "EMP-002": "check [gap]",
    "LDM-003": "check [exclusion]",
    "WCD-001": "event [income_border,gap]",
+   "SEWA-006": "event [res_unknown,exclusion]",
    "HLTH-004": "event",
    "SEWA-018": "event",
    "HLTH-010": "event"

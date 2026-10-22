@@ -177,7 +177,8 @@ var SIT_SPECIAL = {
   family_planning:{en:'Family-planning operation (sterilisation)',hi:'परिवार नियोजन ऑपरेशन (नसबंदी)'},
   freedom:{en:'Freedom fighter, Emergency or Hindi satyagrahi, or their dependant',hi:'स्वतंत्रता सेनानी, आपातकाल या हिंदी सत्याग्रही, या उनके आश्रित'},
   kashmiri:{en:'Kashmiri migrant family',hi:'कश्मीरी प्रवासी परिवार'},
-  padma:{en:'Padma award winner',hi:'पद्म पुरस्कार विजेता'}
+  padma:{en:'Padma award winner',hi:'पद्म पुरस्कार विजेता'},
+  widower:{en:'Widower (wife has died), or never married and aged 45 or more',hi:'विधुर (पत्नी का निधन हुआ), या 45+ आयु और कभी विवाह नहीं हुआ'}
 };
 var RES = [
   {v:'r0',en:'Less than 1 year',hi:'1 वर्ष से कम'},{v:'r1',en:'1 to 3 years',hi:'1 से 3 वर्ष'},{v:'r2',en:'3 to 5 years',hi:'3 से 5 वर्ष'},
@@ -303,7 +304,7 @@ function render(){
   document.getElementById('brand').innerHTML = esc(T(W.brand)) + '<small>'+esc(T(W.brandSub))+'</small>';
   document.getElementById('l-hi').setAttribute('aria-pressed', lang === 'hi');
   document.getElementById('l-en').setAttribute('aria-pressed', lang === 'en');
-  document.getElementById('tsize').setAttribute('aria-label', T(W.tsize));
+  document.getElementById('tsize-t').textContent = ' ' + T(W.tsize);
   var s = st.screen;
   app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : s === 'scheme' ? renderScheme() : s === 'all' ? renderAll() : renderQ(s))+'</div>';
   renderBar(); wire();
@@ -366,7 +367,7 @@ function voiceFor(){
 }
 function textToSay(btn){
   var card = btn.closest('.card');
-  if (card){ return [card.querySelector('h4'), card.querySelector('.ben'), card.querySelector('.why'), card.querySelector('.next')]
+  if (card){ return [card.querySelector('.ttl'), card.querySelector('.ben'), card.querySelector('.why'), card.querySelector('.next')]
     .filter(Boolean).map(function(e){ return e.textContent; }).join('. '); }
   var parts = [document.getElementById('qh'), app.querySelector('.hint')].filter(Boolean).map(function(e){ return e.textContent; });
   app.querySelectorAll('.opt .t, .field label').forEach(function(e){ parts.push(e.textContent); });
@@ -418,7 +419,8 @@ function card(x, kind){
   var s = x.scheme, ev = x.ev, en = splitName(s.name);
   var title = lang === 'hi' ? s.name_hi : en.head, alt = lang === 'hi' ? en.head + (en.tail ? ' – ' + en.tail : '') : (en.tail ? en.tail : s.name_hi);
   var h = '<article class="card '+kind+'" id="s-'+esc(s.id)+'"><span class="stamp'+(s.verified?'':' pending')+'">'+esc(T(s.verified ? W.verified : W.pending))+'</span>';
-  h += '<h4>'+esc(title)+'</h4>'+(alt?'<p class="alt">'+esc(alt)+'</p>':'');
+  var tag = kind === 'info' ? 'h2' : 'h4';                       // a scheme page has only this heading under its h1
+  h += '<'+tag+' class="ttl">'+esc(title)+'</'+tag+'>'+(alt?'<p class="alt">'+esc(alt)+'</p>':'');
   if (s.benefit_short || s.benefit) h += '<p class="ben">'+esc(benefitLine(s))+'</p>';
   h += sayBtn();
   if (ev.window) h += '<span class="window">'+esc(fill(T(W.applyWithin), {w: ev.window}))+'</span>';
@@ -622,7 +624,7 @@ var tsize = 0;
 function applySize(){
   document.documentElement.className = tsize ? 'big' + tsize : '';
   document.getElementById('tsize').setAttribute('aria-pressed', tsize ? 'true' : 'false');
-  document.getElementById('tsize').textContent = tsize === 0 ? 'अ+' : tsize === 1 ? 'अ++' : 'अ';
+  document.getElementById('tsize-l').textContent = tsize === 0 ? 'अ+' : tsize === 1 ? 'अ++' : 'अ';
 }
 try { tsize = parseInt(localStorage.getItem('my-text-size') || '0', 10) || 0; } catch (e) {}
 applySize();

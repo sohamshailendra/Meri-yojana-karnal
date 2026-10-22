@@ -212,3 +212,60 @@ shown. I will keep the snapshot test green throughout.
    FOR-005 caste/disability) in `DATA` directly, flagged in the commit, or only list them in `DATA-ISSUES.md`
    for the next spreadsheet export? Rule 1 says list only; the first fix is one line and visibly wrong today.
 4. **Go-ahead** for the order in §5, or a different priority.
+
+---
+
+# After the improvements (22 October 2026, commit on `main`)
+
+Same method as above: Lighthouse 12 mobile on a gzip server (as Render serves), axe-core on 52 screen states
+(every screen × Hindi/English × light/dark, details open, browse, scheme page), Playwright walkthroughs of the
+same 11 people.
+
+| Measure | Before | After |
+|---|---|---|
+| Lighthouse Performance | 60 | **97** (two runs) |
+| First Contentful Paint | 6.9 s | **0.8–1.1 s** |
+| Largest Contentful Paint | 6.9 s | 2.4–2.6 s |
+| Accessibility / Best Practices / SEO | 100 / 100 / 100 | 100 / 100 / 100 |
+| axe violations | 0 | **0** (52 screen states) |
+| First-visit transfer | 933 KB (634 KB page + 8 Google font files) | **288 KB** (fonts self-hosted, 2 weights; data gzipped) |
+| Requests to other sites | Google Fonts | **none** (CSP allows only the site's own files) |
+| Screens to results (40 test profiles) | 8 for everyone | **6 for most** (1×4, 1×5, 19×6, 17×7, 2×8) |
+| Widow's first "eligible" card | Paudhagiri (school saplings) | **Pension to Widows & Destitute Women** |
+| Print-out for the widow | 34 pages | **2 pages** |
+| Phone Back button | leaves the site, answers lost | moves between questions, answers kept |
+| Shareable results / scheme links | none | `#/results/…`, `#/scheme/ID` (fragment only; never sent to a server) |
+| Browse / search | none | all 258 schemes, spelling-tolerant Hindi/English search, sector and type filters |
+| Read aloud / text size | none | Listen on every question and card; 3 text sizes |
+| Data corrections | — | 6 tagging fixes (see `DATA-ISSUES.md`); engine verdicts otherwise unchanged (snapshot test) |
+
+## Persona outcomes, after
+
+| # | Person | Screens | Yes / Check | First card | Useful? |
+|---|---|---|---|---|---|
+| 1 | Widow, 62, BPL | 7 | 13 / 11 | Pension to Widows & Destitute Women (unless already drawing a pension) | Yes |
+| 2 | SC student, Class 11 | 7 | 20 / 13 | Top Class Education for SC students; scholarships follow | Yes |
+| 3 | Farmer, 2 acres, buffaloes | 6 | 34 / 11 | Livestock and agriculture schemes; no death/caste certificate on the list | Yes |
+| 4 | HBOCW construction worker | 6 | 13 / 9 | Mukhya Mantri Panjikaran Protsahan (labour-board) | Yes |
+| 5 | Woman, 60% disability | 6 | 5 / 6 | ADIP aids and appliances; disability pension to confirm | Yes |
+| 6 | New mother, GEN | 6 | 6 / 7 | PMMVY maternity benefit, then JSSK | Yes |
+| 7 | Street vendor, income unknown | 6 | 2 / 11 | PM SVANidhi | Yes |
+| 8 | Ex-serviceman, 58 | 6 | 1 / 7 | Jan Dhan; ex-serviceman schemes are 60+ or need a different situation | Honest |
+| 9 | Woman MSME owner | 6 | 3 / 8 | Start-up Village Entrepreneurship Programme | Yes |
+| 10 | Newborn daughter, AAY family | 6 | 14 / 11 | Har Ghar – Har Grihini (LPG), ration, health | Yes |
+| 11 | Everything "don't know" | 6 | 0 / 31 | Ujjwala, to check | Honest |
+
+"Yes / Check" counts the person's own schemes; the six match-everyone schemes are in a collapsed group at the
+end and life-event schemes in another.
+
+## What was not done, and why
+
+- **Hindi for benefit, documents and how-to-apply text**: left in English by decision (data, not code). The
+  page uses `*_hi` fields automatically if the master sheet gains them.
+- **Minifying app.js** (3 KB): not worth losing readable code for a district team.
+- **Results page length**: 40–70 cards for farmers and students is the honest size of their lists; the
+  person's own schemes come first, the rest is collapsed, and the slip is two pages.
+- **Real-phone checks** still needed once deployed: Android keyboard over the bottom bar, Hindi voice
+  availability for Listen, and the Open Graph preview on WhatsApp (the `og:url` / `og:image` tags assume
+  `https://meri-yojana-karnal.onrender.com/`; change them in `public/index.html` if the site gets another name
+  or a custom domain).

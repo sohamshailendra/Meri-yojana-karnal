@@ -48,6 +48,7 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .lang button{border:0;background:transparent;padding:6px 12px;min-height:48px;min-width:48px;cursor:pointer;font-weight:700;color:var(--ink)}
 .tsize{border:1.5px solid var(--ink);border-radius:999px;background:transparent;min-height:48px;min-width:48px;padding:0 10px;font-weight:800;color:var(--ink);cursor:pointer;font-size:17px}
 .tsize[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html.big1 body{zoom:1.12} html.big2 body{zoom:1.25}
 .say{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--ink-soft);border-radius:999px;background:transparent;color:var(--ink);padding:6px 14px;min-height:44px;font-weight:700;font-size:15px;cursor:pointer;margin:6px 0}
 .say[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
@@ -108,7 +109,7 @@ h3.sector{font-size:17px;font-weight:700;color:var(--muted);margin:18px 0 8px;bo
 .card.info{border-left-color:var(--ink)}
 .plink{display:inline-block;margin-top:8px;font-size:15px;color:var(--ink)}
 .card.life{border-left-color:var(--ink-soft)}
-.card h4{margin:0;font-size:20px;line-height:1.25;font-weight:800;padding-right:104px}
+.card .ttl{margin:0;font-size:20px;line-height:1.25;font-weight:800;padding-right:104px}
 .card .alt{margin:2px 0 0;color:var(--muted);font-size:15px;padding-right:104px}
 .card .ben{margin:10px 0 6px;font-size:17px}
 .stamp{position:absolute;top:12px;right:10px;width:94px;text-align:center;font-size:13px;line-height:1.15;font-weight:800;
@@ -140,7 +141,7 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
 .card.check .next,.card.cond .next{background:var(--paper)}
 .next b{display:block;color:var(--ink);font-size:14px;text-transform:uppercase;letter-spacing:.02em}
 .next a.go{display:inline-block;margin-top:6px;border:2px solid var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;font-weight:800;color:var(--ink);text-decoration:none;word-break:break-all}
-.card h4 .tail{display:block;font-weight:500;font-size:15px;color:var(--muted);margin-top:2px}
+.card .ttl .tail{display:block;font-weight:500;font-size:15px;color:var(--muted);margin-top:2px}
 .slip{display:none}
 .search{display:grid;gap:10px;margin:0 0 14px}
 .search input,.search select{width:100%;font-size:18px;padding:12px 14px;min-height:52px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--text)}
