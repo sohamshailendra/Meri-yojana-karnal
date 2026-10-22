@@ -132,9 +132,18 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
 .slabs li.m{color:var(--text);font-weight:700}
 .slabs li.m::before{content:"✓ ";color:var(--paddy)}
 .docs{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin:12px 0}
-.docs ul{list-style:none;padding:0;margin:6px 0;columns:2;column-gap:16px}
-.docs li{break-inside:avoid;padding:4px 0 4px 28px;position:relative;font-size:16px}
-.docs li::before{content:"";position:absolute;left:0;top:8px;width:18px;height:18px;border:2px solid var(--ink-soft);border-radius:4px}
+.docs ul{list-style:none;padding:0;margin:6px 0}
+.docs li{padding:0}
+.chk{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:6px 0;cursor:pointer;font-size:17px}
+.chk input{flex:none;width:26px;height:26px;margin:2px 0 0;accent-color:var(--paddy)}
+.chk small{display:block;color:var(--muted);font-size:14px}
+.chk input:checked ~ span{text-decoration:line-through;color:var(--muted)}
+.next{background:var(--paddy-tint);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:16px}
+.card.check .next,.card.cond .next{background:var(--paper)}
+.next b{display:block;color:var(--ink);font-size:14px;text-transform:uppercase;letter-spacing:.02em}
+.next a.go{display:inline-block;margin-top:6px;border:2px solid var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;font-weight:800;color:var(--ink);text-decoration:none;word-break:break-all}
+.card h4 .tail{display:block;font-weight:500;font-size:15px;color:var(--muted);margin-top:2px}
+.slip{display:none}
 .rbar{display:flex;flex-wrap:wrap;gap:8px}
 .rbar .btn{flex:1 1 180px;font-size:17px;min-height:52px}
 .lifebox{margin-top:30px}
@@ -144,10 +153,19 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
 @media (max-width:380px){.hero h1{font-size:38px}h1.q{font-size:26px}.docs ul{columns:1}}
 @media (prefers-reduced-motion:no-preference){.screen{animation:in .18s ease-out}@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
 @media print{
-  header.top,nav.actions,.rbar,.noprint,.lifebox{display:none!important}
-  body{background:#fff;color:#000;font-size:11pt}
+  header.top,nav.actions,.screen>*:not(.slip){display:none!important}
+  body{background:#fff;color:#000;font-size:10.5pt;line-height:1.35}
   main{padding:0}
-  .card{break-inside:avoid;border-color:#999}
+  .slip{display:block}
+  .slip h1{font-size:18pt;margin:0}
+  .slip .sub{color:#333;margin:0 0 10pt}
+  .slip h2{font-size:13pt;margin:12pt 0 4pt;border-bottom:1px solid #999}
+  .slip ol,.slip ul{margin:0;padding-left:18pt}
+  .slip li{margin:0 0 5pt;break-inside:avoid}
+  .slip .d{list-style:none;padding:0;columns:2}
+  .slip .d li::before{content:"☐ "}
+  .slip small{color:#333}
+  .slip .foot{margin-top:10pt;font-size:9pt}
 }
 </style>
 </head>
@@ -457,7 +475,21 @@ var W = {
   applyWithin:{en:'Apply within: {w}',hi:'आवेदन की समय-सीमा: {w}'},
   foot:{en:'Prepared by the District Administration, Karnal. This is guidance, not a sanction. Eligibility is decided by the department after checking documents and Parivar Pehchan Patra data.',
         hi:'ज़िला प्रशासन, करनाल द्वारा तैयार। यह केवल मार्गदर्शन है, स्वीकृति नहीं। पात्रता का निर्णय विभाग दस्तावेज़ों व परिवार पहचान पत्र के आँकड़ों की जाँच के बाद करेगा।'},
-  waHead:{en:'My schemes – District Karnal',hi:'मेरी योजनाएँ – ज़िला करनाल'}
+  waHead:{en:'My schemes – District Karnal',hi:'मेरी योजनाएँ – ज़िला करनाल'},
+  waMore:{en:'+ {n} more on the website',hi:'+ {n} और वेबसाइट पर'},
+  stepH:{en:'Next step',hi:'अगला कदम'},
+  stepOnline:{en:'Apply online',hi:'ऑनलाइन आवेदन करें'},
+  stepOnlineNoLink:{en:'Apply online through the Antyodaya Saral portal or at any CSC / Atal Seva Kendra.',hi:'अंत्योदय सरल पोर्टल पर या किसी भी CSC / अटल सेवा केंद्र से ऑनलाइन आवेदन करें।'},
+  stepCsc:{en:'Your CSC / Atal Seva Kendra can do this for you.',hi:'आपका CSC / अटल सेवा केंद्र यह आपके लिए कर सकता है।'},
+  stepAuto:{en:'No form to fill. The benefit comes automatically through Parivar Pehchan Patra, school or anganwadi records. If you have not received it, ask:',hi:'कोई फ़ॉर्म नहीं भरना। लाभ परिवार पहचान पत्र, स्कूल या आँगनवाड़ी रिकॉर्ड से अपने-आप मिलता है। न मिला हो तो पूछें:'},
+  stepBank:{en:'Apply at your bank or post office.',hi:'अपने बैंक या डाकघर में आवेदन करें।'},
+  stepOffice:{en:'Go to this office with the documents:',hi:'दस्तावेज़ लेकर इस कार्यालय में जाएँ:'},
+  stepSchool:{en:'Ask at the school, college or institution.',hi:'स्कूल, कॉलेज या संस्थान में पूछें।'},
+  forN:{en:'needed for {n} of your schemes',hi:'आपकी {n} योजनाओं के लिए'},
+  for1:{en:'needed for: {s}',hi:'इसके लिए: {s}'},
+  slipTitle:{en:'My schemes – District Karnal',hi:'मेरी योजनाएँ – ज़िला करनाल'},
+  slipDate:{en:'Printed {d}. Take this slip and the documents to the office or CSC.',hi:'{d} को प्रिंट। यह पर्ची और दस्तावेज़ कार्यालय या CSC पर ले जाएँ।'},
+  office:{en:'Office',hi:'कार्यालय'}, site:{en:'Check again at',hi:'दोबारा देखें'}
 };
 var REASON = {
   exclusion:{en:'Not for: {t}',hi:'इनके लिए नहीं: {t}'},
@@ -579,7 +611,7 @@ var Q = {
 
 /* ---------------------------------------------------------------- state */
 var st;
-function reset(){ st = { screen:'start', ans:{}, draft:null, history:[], skipped:{}, err:'' }; }
+function reset(){ st = { screen:'start', ans:{}, draft:null, history:[], skipped:{}, err:'', ticked:{} }; }
 reset();
 var KEY = {types:'types',category:'cats',income:'income',occupation:'occ','class':'cls',disability:'dis',event:'events',residence:'res'};
 var SINGLE = {income:1,'class':1,disability:1,residence:1};
@@ -698,16 +730,46 @@ function renderQ(q){
   return h + '<p class="err" role="alert">'+esc(st.err)+'</p>';
 }
 function sectorName(sec){ return lang === 'hi' && SECTOR[sec] ? SECTOR[sec] : sec; }
+/* Long English names are "Short name – explanation" or "Short name (detail)": show the short part as the title. */
+function splitName(n){
+  if (n.length <= 60) return { head: n, tail: '' };
+  var m = /^(.{12,70}?)(?: – | \(| - )(.+)$/.exec(n);
+  return m ? { head: m[1], tail: n.slice(m[1].length).replace(/^[\s–-]+/, '') } : { head: n, tail: '' };
+}
+/* First sentence of the recorded benefit, as the one line a person reads first. */
+function benefitLine(s){
+  var b = (s.benefit_short || s.benefit || '').replace(/^[•\-\s]+/, '');
+  var m = /[.;]\s+[A-Z₹•]/.exec(b), first = m ? b.slice(0, m.index + 1) : b;   // no lookbehind: older phone browsers
+  if (first.length > 150){ var cut = first.lastIndexOf(' ', 140); first = first.slice(0, cut > 60 ? cut : 140) + '…'; }
+  return first;
+}
+/* One plain next step from the recorded mode, link and nodal officer. Nothing here is invented:
+   the mode decides the wording, the link and the office come from the record. */
+function nextStep(s){
+  var m = s.mode || '', h = '<div class="next"><b>'+esc(T(W.stepH))+'</b>';
+  if (/pro-active/i.test(m)) h += esc(T(W.stepAuto)) + ' ' + esc(s.nodal);
+  else if (/bank|post office/i.test(m) && !/online/i.test(m)) h += esc(T(W.stepBank)) + (s.link ? '<br><a class="go" href="'+esc(s.link)+'" target="_blank" rel="noopener">'+esc(s.link.replace(/^https?:\/\//,''))+'</a>' : '');
+  else if (/online|portal|app|saral|udid|mfmb|tracking/i.test(m)){
+    h += s.link ? '<a class="go" href="'+esc(s.link)+'" target="_blank" rel="noopener">'+esc(T(W.stepOnline))+': '+esc(s.link.replace(/^https?:\/\//,''))+'</a>' : esc(T(W.stepOnlineNoLink));
+    if (/csc|saral/i.test(m) || !s.link) h += '<br>'+esc(T(W.stepCsc));
+    else h += '<br>'+esc(T(W.stepCsc));
+  }
+  else if (/school|institutional|mis|cluster|hsrlm|test/i.test(m)) h += esc(T(W.stepSchool)) + ' ' + esc(s.nodal);
+  else h += esc(T(W.stepOffice)) + ' ' + esc(s.nodal);
+  return h + '</div>';
+}
 function nameOf(s){ return lang === 'hi' && s.name_hi ? s.name_hi : s.name; }
 function card(x, kind){
-  var s = x.scheme, ev = x.ev, alt = lang === 'hi' && s.name_hi ? s.name : s.name_hi;
-  var h = '<article class="card '+kind+'"><span class="stamp'+(s.verified?'':' pending')+'">'+esc(T(s.verified ? W.verified : W.pending))+'</span>';
-  h += '<h4>'+esc(nameOf(s))+'</h4>'+(alt?'<p class="alt">'+esc(alt)+'</p>':'');
-  if (s.benefit_short) h += '<p class="ben">'+esc(s.benefit_short)+'</p>';
+  var s = x.scheme, ev = x.ev, en = splitName(s.name);
+  var title = lang === 'hi' ? s.name_hi : en.head, alt = lang === 'hi' ? en.head + (en.tail ? ' – ' + en.tail : '') : (en.tail ? en.tail : s.name_hi);
+  var h = '<article class="card '+kind+'" id="s-'+esc(s.id)+'"><span class="stamp'+(s.verified?'':' pending')+'">'+esc(T(s.verified ? W.verified : W.pending))+'</span>';
+  h += '<h4>'+esc(title)+'</h4>'+(alt?'<p class="alt">'+esc(alt)+'</p>':'');
+  if (s.benefit_short || s.benefit) h += '<p class="ben">'+esc(benefitLine(s))+'</p>';
   if (ev.window) h += '<span class="window">'+esc(fill(T(W.applyWithin), {w: ev.window}))+'</span>';
   var ms = (ev.slabs || []).filter(function(z){ return z.match; });
   if (ms.length && ms.length < ev.slabs.length) h += '<ul class="slabs">'+ms.map(function(z){ return '<li class="m">'+esc(z.label)+(z.benefit?' – '+esc(z.benefit):'')+'</li>'; }).join('')+'</ul>';
   if (kind !== 'elig' && ev.reasons.length) h += '<div class="why">'+(kind === 'cond' ? '<p><b>'+esc(T(W.unless))+'</b></p>' : '')+ev.reasons.map(function(r){ return '<p>'+reasonText(r)+'</p>'; }).join('')+'</div>';
+  if (kind !== 'life') h += nextStep(s);
   if (s.nodal) h += '<p class="contact"><b>'+esc(T(W.contact))+'</b> '+esc(s.nodal)+'</p>';
   h += '<details><summary>'+esc(T(W.more))+'</summary><div class="det">';
   if (W.enOnly[lang]) h += '<p class="meta">'+esc(W.enOnly[lang])+'</p>';
@@ -753,26 +815,42 @@ function renderResults(){
   var everyone = R.eligible.filter(function(x){ return E.specificity(x.scheme) === 0; });
   var own = R.eligible.filter(function(x){ return E.specificity(x.scheme) > 0; });
   var cond = R.check.filter(exclusionOnly), check = R.check.filter(function(x){ return !exclusionOnly(x); });
-  var yes = own.concat(cond);
+  var yes = bySpecificity(own.concat(cond));
+  docs = E.docsChecklist(yes);
+  var docFor = {}; yes.forEach(function(x){ (x.scheme.docs_canon || []).forEach(function(d){ (docFor[d] = docFor[d] || []).push(x.scheme); }); });
   var h = '<h1 class="q">'+esc(T(W.resH))+'</h1>';
   h += '<div class="sum"><a class="e" href="#elig"><b>'+yes.length+'</b>'+esc(T(W.eligN))+'</a><a class="c" href="#check"><b>'+check.length+'</b>'+esc(T(W.checkN))+'</a></div>';
   h += '<div class="rbar noprint"><button type="button" class="btn" id="b-print">'+esc(T(W.print))+'</button><a class="btn" id="b-wa" target="_blank" rel="noopener" href="#">'+esc(T(W.wa))+'</a></div>';
   if (docs.length) h += '<section class="docs"><h2 class="sec" style="margin-top:6px">'+esc(T(W.docsH))+'</h2><p class="secnote">'+esc(T(W.docsNote))+'</p><ul>'+
-    docs.map(function(d){ return '<li>'+esc(T(DOCS[d]))+'</li>'; }).join('')+'</ul></section>';
+    docs.map(function(d){ var f = docFor[d] || [], sub = f.length === 1 ? fill(T(W.for1), {s: esc(lang === 'hi' ? f[0].name_hi : splitName(f[0].name).head)}) : fill(T(W.forN), {n: f.length});
+      return '<li><label class="chk"><input type="checkbox"'+(st.ticked[d] ? ' checked' : '')+' data-doc="'+esc(d)+'"><span>'+esc(T(DOCS[d]))+'<small>'+sub+'</small></span></label></li>'; }).join('')+'</ul></section>';
   h += '<h2 class="sec" id="elig">'+esc(T(W.eligH))+' ('+yes.length+')</h2><p class="secnote">'+esc(T(W.eligNote))+'</p>';
   h += yes.length ? renderGroups(groupBy(bySpecificity(yes), function(x){ return x.scheme.sector || '—'; }, sectorName), null) : '<p class="empty">'+esc(T(W.noElig))+'</p>';
   h += '<h2 class="sec" id="check">'+esc(T(W.checkH))+' ('+check.length+')</h2><p class="secnote">'+esc(T(W.checkNote))+'</p>' + bySector(check, 'check');
   if (everyone.length) h += '<details class="lifebox"><summary>'+esc(T(W.everyoneH))+' ('+everyone.length+')</summary><p class="secnote">'+esc(T(W.everyoneNote))+'</p>'+bySector(everyone, 'elig')+'</details>';
   if (R.event.length) h += '<details class="lifebox"><summary>'+esc(T(W.lifeH))+' ('+R.event.length+')</summary><p class="secnote">'+esc(T(W.lifeNote))+'</p>'+byEvent(R.event)+'</details>';
+  h += slip(yes, check, docs);
   return h + '<p class="foot">'+esc(T(W.foot))+'<br>'+esc(fill(T(W.dataLine), {src:DATA.meta.source, d:DATA.meta.built, n:DATA.meta.schemes}))+'</p>';
+}
+/* The printable slip: one or two pages a person can carry to the office. */
+function slip(yes, check, docs){
+  function line(x){ var s = x.scheme; return '<li><b>'+esc(lang === 'hi' ? s.name_hi : splitName(s.name).head)+'</b>'+(lang === 'hi' ? ' <small>('+esc(splitName(s.name).head)+')</small>' : '')+
+    '<br>'+esc(benefitLine(s))+'<br><small>'+esc(T(W.office))+': '+esc(s.nodal)+(s.link ? ' · '+esc(s.link.replace(/^https?:\/\//,'')) : '')+'</small></li>'; }
+  var d = new Date(), ds = ('0'+d.getDate()).slice(-2)+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+d.getFullYear();
+  var h = '<section class="slip" aria-hidden="true"><h1>'+esc(T(W.slipTitle))+'</h1><p class="sub">'+esc(fill(T(W.slipDate), {d: ds}))+'</p>';
+  h += '<h2>'+esc(T(W.eligH))+' ('+yes.length+')</h2><ol>'+yes.map(line).join('')+'</ol>';
+  if (check.length) h += '<h2>'+esc(T(W.checkH))+' ('+check.length+')</h2><ol>'+check.map(function(x){ return '<li><b>'+esc(lang === 'hi' ? x.scheme.name_hi : splitName(x.scheme.name).head)+'</b><br><small>'+x.ev.reasons.map(reasonText).join('; ')+'</small></li>'; }).join('')+'</ol>';
+  if (docs.length) h += '<h2>'+esc(T(W.docsH))+'</h2><ul class="d">'+docs.map(function(k){ return '<li>'+esc(T(DOCS[k]))+'</li>'; }).join('')+'</ul>';
+  return h + '<p class="foot">'+esc(T(W.foot))+(/^https?:$/.test(location.protocol) ? '<br>'+esc(T(W.site))+': '+esc(location.origin + location.pathname) : '')+'</p></section>';
 }
 function waText(){
   var R = RES_CACHE, L = [T(W.waHead), '', T(W.eligH) + ':'];
   var yes = bySpecificity(R.eligible.filter(function(x){ return E.specificity(x.scheme) > 0; }).concat(R.check.filter(exclusionOnly)));
   var check = bySpecificity(R.check.filter(function(x){ return !exclusionOnly(x); }));
-  yes.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)+(x.scheme.nodal?' – '+x.scheme.nodal:'')); });
-  if (check.length){ L.push('', T(W.checkH) + ':'); check.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)); }); }
-  var docs = E.docsChecklist(R.eligible);
+  yes.slice(0, 10).forEach(function(x, i){ var s = x.scheme; L.push((i+1)+'. '+(lang === 'hi' ? s.name_hi : splitName(s.name).head)+' – '+(s.link ? s.link : s.nodal)); });
+  if (yes.length > 10) L.push(fill(T(W.waMore), {n: yes.length - 10}));
+  if (check.length){ L.push('', T(W.checkH) + ':'); check.slice(0, 5).forEach(function(x, i){ L.push((i+1)+'. '+(lang === 'hi' ? x.scheme.name_hi : splitName(x.scheme.name).head)); }); if (check.length > 5) L.push(fill(T(W.waMore), {n: check.length - 5})); }
+  var docs = E.docsChecklist(yes);
   if (docs.length) L.push('', T(W.docsH) + ': ' + docs.map(function(d){ return T(DOCS[d]); }).join(', '));
   var t = L.join('\n');
   t = t.length > 3500 ? t.slice(0, 3500) + '…' : t;
@@ -820,12 +898,8 @@ function wire(){
   if (n) n.onclick = function(){ if (st.screen === 'start'){ st.history = ['types']; go('types'); } else commit(); };
   var b = document.getElementById('b-back'); if (b) b.onclick = back;
   var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); window.scrollTo(0,0); };
-  var p = document.getElementById('b-print'); if (p) p.onclick = function(){
-    var closed = [].slice.call(app.querySelectorAll('.card details:not([open])'));
-    closed.forEach(function(d){ d.open = true; });
-    window.print();
-    setTimeout(function(){ closed.forEach(function(d){ d.open = false; }); }, 500);
-  };
+  var p = document.getElementById('b-print'); if (p) p.onclick = function(){ window.print(); };
+  app.querySelectorAll('.chk input').forEach(function(c){ c.addEventListener('change', function(){ st.ticked[c.getAttribute('data-doc')] = c.checked; }); });
   var w = document.getElementById('b-wa'); if (w) w.href = 'https://wa.me/?text=' + encodeURIComponent(waText());
 }
 document.getElementById('l-hi').onclick = function(){ lang = 'hi'; render(); };
