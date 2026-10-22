@@ -108,7 +108,7 @@ h2.sec{font-size:24px;font-weight:800;color:var(--ink);margin:30px 0 4px}
 .secnote{color:var(--muted);font-size:16px;margin:0 0 10px}
 h3.sector{font-size:17px;font-weight:700;color:var(--muted);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
 .card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--paddy);border-radius:10px;padding:14px 16px;margin:0 0 12px;position:relative}
-.card.check{border-left-color:var(--haldi)}
+.card.check,.card.cond{border-left-color:var(--haldi)}
 .card.life{border-left-color:var(--ink-soft)}
 .card h4{margin:0;font-size:20px;line-height:1.25;font-weight:800;padding-right:92px}
 .card .alt{margin:2px 0 0;color:var(--muted);font-size:15px;padding-right:92px}
@@ -374,8 +374,26 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
     return out;
   }
 
+  /* How specific a scheme is to the person: the number of answered questions it actually tests.
+     0 means it matches everyone, so the page lists it last. */
+  function specificity(s) {
+    var n = 0;
+    if (s.btype !== 'Individual' && s.btype !== 'Household') n++;
+    if (s.gender !== 'Any') n++;
+    if (s.age_min != null || s.age_max != null) n++;
+    if (s.cat && !s.cat.any && (s.cat.tokens.length || s.cat.other.length)) n++;
+    if (s.income_cap != null) n++;
+    if (s.occ && s.occ.length) n++;
+    if (s.btype === 'Student' && s.cls && s.cls.length && s.cls.length < LEVELS.length) n++;
+    if (s.dis_min != null) n++;
+    if (s.res_years != null) n++;
+    if (hardEvents(s).length) n++;
+    if ((s.gaps || []).some(function (g) { return !g.report_only; })) n++;
+    return n;
+  }
+
   var API = { LEVELS: LEVELS, INCOME_BANDS: INCOME_BANDS, MAX_SCREENS: MAX_SCREENS, ORDER: ORDER,
-    evaluate: evaluate, nextQuestion: nextQuestion, remainingEstimate: remainingEstimate,
+    evaluate: evaluate, specificity: specificity, nextQuestion: nextQuestion, remainingEstimate: remainingEstimate,
     results: results, occOptions: occOptions, eventOptions: eventOptions, candidates: candidates,
     docsChecklist: docsChecklist, hardEvents: hardEvents };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.YojanaEngine = API;
@@ -414,6 +432,10 @@ var W = {
   checkH:{en:'Check these',hi:'इनकी पुष्टि करें'},
   checkNote:{en:'You may be eligible. Read the condition in yellow and confirm it yourself or with the office.',hi:'आप पात्र हो सकते हैं। पीले हिस्से में लिखी शर्त पढ़ें और खुद या कार्यालय से पुष्टि करें।'},
   lifeH:{en:'If your situation changes',hi:'अगर आपकी स्थिति बदले'},
+  everyoneH:{en:'For everyone in Karnal',hi:'करनाल में सभी के लिए'},
+  everyoneNote:{en:'These have no special condition. They are listed last so your own schemes come first.',hi:'इनकी कोई विशेष शर्त नहीं है। ये अंत में हैं ताकि आपकी अपनी योजनाएँ पहले दिखें।'},
+  unless:{en:'Yes, unless this applies to you:',hi:'हाँ, बशर्ते यह आप पर लागू न हो:'},
+  onEvent:{en:'If: {e}',hi:'यदि: {e}'},
   lifeNote:{en:'These apply on events such as a birth, marriage, death, accident or illness, or to special groups.',hi:'ये योजनाएँ जन्म, विवाह, मृत्यु, दुर्घटना, बीमारी जैसी घटनाओं पर या विशेष वर्गों के लिए हैं।'},
   noElig:{en:'No scheme matched every condition. Look at the ones to check below.',hi:'किसी योजना की सभी शर्तें पूरी नहीं हुईं। नीचे पुष्टि वाली योजनाएँ देखें।'},
   docsH:{en:'Documents to keep ready',hi:'ये दस्तावेज़ तैयार रखें'},
@@ -673,7 +695,7 @@ function card(x, kind){
   if (ev.window) h += '<span class="window">'+esc(fill(T(W.applyWithin), {w: ev.window}))+'</span>';
   var ms = (ev.slabs || []).filter(function(z){ return z.match; });
   if (ms.length && ms.length < ev.slabs.length) h += '<ul class="slabs">'+ms.map(function(z){ return '<li class="m">'+esc(z.label)+(z.benefit?' – '+esc(z.benefit):'')+'</li>'; }).join('')+'</ul>';
-  if (kind !== 'elig' && ev.reasons.length) h += '<div class="why">'+ev.reasons.map(function(r){ return '<p>'+reasonText(r)+'</p>'; }).join('')+'</div>';
+  if (kind !== 'elig' && ev.reasons.length) h += '<div class="why">'+(kind === 'cond' ? '<p><b>'+esc(T(W.unless))+'</b></p>' : '')+ev.reasons.map(function(r){ return '<p>'+reasonText(r)+'</p>'; }).join('')+'</div>';
   if (s.nodal) h += '<p class="contact"><b>'+esc(T(W.contact))+'</b> '+esc(s.nodal)+'</p>';
   h += '<details><summary>'+esc(T(W.more))+'</summary><div class="det">';
   if (W.enOnly[lang]) h += '<p class="meta">'+esc(W.enOnly[lang])+'</p>';
@@ -686,30 +708,58 @@ function card(x, kind){
   if (s.elig_text) h += '<h5>'+esc(T(W.rulesH))+'</h5><p>'+esc(s.elig_text)+'</p>';
   return h + '<p class="meta">'+esc(s.id)+' | '+esc(s.dept)+'</p></div></details></article>';
 }
-function bySector(list, kind){
+/* Most specific to the person first; verified before unverified; then by id for a stable order. */
+function bySpecificity(list){
+  return list.slice().sort(function(a, b){
+    return E.specificity(b.scheme) - E.specificity(a.scheme) || (b.scheme.verified ? 1 : 0) - (a.scheme.verified ? 1 : 0) || (a.scheme.id < b.scheme.id ? -1 : 1);
+  });
+}
+/* A "check" scheme whose only open point is an exclusion the person can judge for themselves. */
+function exclusionOnly(x){ return x.ev.reasons.length > 0 && x.ev.reasons.every(function(r){ return r.key === 'exclusion' || r.key === 'cat_note'; }); }
+function groupBy(list, keyOf, nameOf_){
   var groups = {}, order = [];
-  list.forEach(function(x){ var k = x.scheme.sector || '—'; if (!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(x); });
-  order.sort(function(a, b){ return groups[b].length - groups[a].length; });
-  return order.map(function(k){ return '<h3 class="sector">'+esc(sectorName(k))+' ('+groups[k].length+')</h3>'+groups[k].map(function(x){ return card(x, kind); }).join(''); }).join('');
+  list.forEach(function(x){ var k = keyOf(x); if (!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(x); });
+  return { order: order, groups: groups, name: nameOf_ };
+}
+function renderGroups(g, kind){
+  return g.order.map(function(k){ return '<h3 class="sector">'+esc(g.name(k))+' ('+g.groups[k].length+')</h3>'+g.groups[k].map(function(x){ return card(x, kind || (x.ev.status === 'eligible' ? 'elig' : 'cond')); }).join(''); }).join('');
+}
+/* Sectors in the order their most specific scheme appears, so the person's own sector leads. */
+function bySector(list, kind){
+  var g = groupBy(bySpecificity(list), function(x){ return x.scheme.sector || '—'; }, sectorName);
+  return renderGroups(g, kind);
+}
+/* Life-event schemes grouped by the event that would make them apply. */
+function byEvent(list){
+  var g = groupBy(bySpecificity(list), function(x){ return E.hardEvents(x.scheme)[0] || 'other'; },
+    function(k){ var o = SIT_EVENTS[k] || SIT_SPECIAL[k]; return fill(T(W.onEvent), {e: o ? T(o) : T(W.none)}); });
+  return renderGroups(g, 'life');
 }
 var RES_CACHE;
 function renderResults(){
   var R = RES_CACHE = E.results(S, st.ans, st.skipped), docs = E.docsChecklist(R.eligible);
+  var everyone = R.eligible.filter(function(x){ return E.specificity(x.scheme) === 0; });
+  var own = R.eligible.filter(function(x){ return E.specificity(x.scheme) > 0; });
+  var cond = R.check.filter(exclusionOnly), check = R.check.filter(function(x){ return !exclusionOnly(x); });
+  var yes = own.concat(cond);
   var h = '<h1 class="q">'+esc(T(W.resH))+'</h1>';
-  h += '<div class="sum"><a class="e" href="#elig"><b>'+R.eligible.length+'</b>'+esc(T(W.eligN))+'</a><a class="c" href="#check"><b>'+R.check.length+'</b>'+esc(T(W.checkN))+'</a></div>';
+  h += '<div class="sum"><a class="e" href="#elig"><b>'+yes.length+'</b>'+esc(T(W.eligN))+'</a><a class="c" href="#check"><b>'+check.length+'</b>'+esc(T(W.checkN))+'</a></div>';
   h += '<div class="rbar noprint"><button type="button" class="btn" id="b-print">'+esc(T(W.print))+'</button><a class="btn" id="b-wa" target="_blank" rel="noopener" href="#">'+esc(T(W.wa))+'</a></div>';
   if (docs.length) h += '<section class="docs"><h2 class="sec" style="margin-top:6px">'+esc(T(W.docsH))+'</h2><p class="secnote">'+esc(T(W.docsNote))+'</p><ul>'+
     docs.map(function(d){ return '<li>'+esc(T(DOCS[d]))+'</li>'; }).join('')+'</ul></section>';
-  h += '<h2 class="sec" id="elig">'+esc(T(W.eligH))+' ('+R.eligible.length+')</h2><p class="secnote">'+esc(T(W.eligNote))+'</p>';
-  h += R.eligible.length ? bySector(R.eligible, 'elig') : '<p class="empty">'+esc(T(W.noElig))+'</p>';
-  h += '<h2 class="sec" id="check">'+esc(T(W.checkH))+' ('+R.check.length+')</h2><p class="secnote">'+esc(T(W.checkNote))+'</p>' + bySector(R.check, 'check');
-  if (R.event.length) h += '<details class="lifebox"><summary>'+esc(T(W.lifeH))+' ('+R.event.length+')</summary><p class="secnote">'+esc(T(W.lifeNote))+'</p>'+bySector(R.event, 'life')+'</details>';
+  h += '<h2 class="sec" id="elig">'+esc(T(W.eligH))+' ('+yes.length+')</h2><p class="secnote">'+esc(T(W.eligNote))+'</p>';
+  h += yes.length ? renderGroups(groupBy(bySpecificity(yes), function(x){ return x.scheme.sector || '—'; }, sectorName), null) : '<p class="empty">'+esc(T(W.noElig))+'</p>';
+  h += '<h2 class="sec" id="check">'+esc(T(W.checkH))+' ('+check.length+')</h2><p class="secnote">'+esc(T(W.checkNote))+'</p>' + bySector(check, 'check');
+  if (everyone.length) h += '<details class="lifebox"><summary>'+esc(T(W.everyoneH))+' ('+everyone.length+')</summary><p class="secnote">'+esc(T(W.everyoneNote))+'</p>'+bySector(everyone, 'elig')+'</details>';
+  if (R.event.length) h += '<details class="lifebox"><summary>'+esc(T(W.lifeH))+' ('+R.event.length+')</summary><p class="secnote">'+esc(T(W.lifeNote))+'</p>'+byEvent(R.event)+'</details>';
   return h + '<p class="foot">'+esc(T(W.foot))+'<br>'+esc(fill(T(W.dataLine), {src:DATA.meta.source, d:DATA.meta.built, n:DATA.meta.schemes}))+'</p>';
 }
 function waText(){
   var R = RES_CACHE, L = [T(W.waHead), '', T(W.eligH) + ':'];
-  R.eligible.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)+(x.scheme.nodal?' – '+x.scheme.nodal:'')); });
-  if (R.check.length){ L.push('', T(W.checkH) + ':'); R.check.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)); }); }
+  var yes = bySpecificity(R.eligible.filter(function(x){ return E.specificity(x.scheme) > 0; }).concat(R.check.filter(exclusionOnly)));
+  var check = bySpecificity(R.check.filter(function(x){ return !exclusionOnly(x); }));
+  yes.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)+(x.scheme.nodal?' – '+x.scheme.nodal:'')); });
+  if (check.length){ L.push('', T(W.checkH) + ':'); check.forEach(function(x, i){ L.push((i+1)+'. '+nameOf(x.scheme)); }); }
   var docs = E.docsChecklist(R.eligible);
   if (docs.length) L.push('', T(W.docsH) + ': ' + docs.map(function(d){ return T(DOCS[d]); }).join(', '));
   var t = L.join('\n');
