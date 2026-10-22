@@ -1,5 +1,6 @@
 (function(){
 'use strict';
+document.documentElement.classList.add('js');
 var E = window.YojanaEngine, S = [], DATA = { meta: {}, schemes: [] };
 var lang = 'hi';
 function T(o){ return typeof o === 'string' ? o : (o[lang] || o.en); }
@@ -9,31 +10,34 @@ function fill(s, o){ return s.replace(/\{(\w+)\}/g, function(_, k){ return o[k];
 
 /* ---------------------------------------------------------------- words */
 var W = {
-  brand:{en:'Meri Yojana – Karnal',hi:'मेरी योजना – करनाल'}, brandSub:{en:'Government scheme finder • District Administration, Karnal',hi:'सरकारी योजना खोजक • ज़िला प्रशासन, करनाल'},
-  govT:{en:'<b>Government of Haryana</b> • District Administration, Karnal • हरियाणा सरकार',hi:'<b>हरियाणा सरकार</b> • ज़िला प्रशासन, करनाल • Government of Haryana'},
-  pill:{en:'District Administration, Karnal • Government of Haryana',hi:'ज़िला प्रशासन, करनाल • हरियाणा सरकार'},
+  brand:{en:'Meri Yojana – Karnal',hi:'मेरी योजना – करनाल'}, brandSub:{en:'Government of Haryana • District Administration, Karnal',hi:'हरियाणा सरकार • ज़िला प्रशासन, करनाल'},
+  tab1:{en:'How it works',hi:'कैसे काम करता है'}, tab2:{en:'All schemes',hi:'सभी योजनाएँ'}, tab3:{en:'Departments',hi:'विभाग'},
+  title1:{en:'Your government',hi:'आपकी सरकारी'}, title2:{en:'schemes',hi:'योजनाएँ'},
+  standfirst:{en:'Which of the 258 government schemes in District Karnal are yours: find out in six questions.',hi:'करनाल ज़िले की 258 सरकारी योजनाओं में से आपकी कौन-सी हैं, छह सवालों में जानिए।'},
   browseSee:{en:'See all schemes',hi:'सभी योजनाएँ देखें'},
-  whoH:{en:'Who are you looking for?',hi:'किसके लिए देख रहे हैं?'},
-  qsStudent:{en:'Student',hi:'विद्यार्थी'}, qsStudentS:{en:'Scholarships, books, hostel',hi:'छात्रवृत्ति, किताबें, हॉस्टल'},
-  qsFarmer:{en:'Farmer / livestock',hi:'किसान / पशुपालक'}, qsFarmerS:{en:'Crops, insurance, animals, fisheries',hi:'फसल, बीमा, पशु, मछली पालन'},
-  qsWorker:{en:'Worker / labourer',hi:'श्रमिक / मज़दूर'}, qsWorkerS:{en:'Construction, factory, unorganised work',hi:'निर्माण, फ़ैक्टरी, असंगठित कार्य'},
-  qsEnt:{en:'Business / self-help group',hi:'व्यवसाय / स्वयं सहायता समूह'}, qsEntS:{en:'Loans, subsidies, SHG',hi:'ऋण, अनुदान, SHG'},
-  qsSelf:{en:'Myself or my family',hi:'स्वयं या परिवार'}, qsSelfS:{en:'Pension, ration, housing, health',hi:'पेंशन, राशन, आवास, स्वास्थ्य'},
-  stSchemes:{en:'schemes',hi:'योजनाएँ'}, stSectors:{en:'departments',hi:'विभाग'}, stQ:{en:'short questions',hi:'आसान सवाल'}, stLang:{en:'languages',hi:'भाषाएँ'},
-  homeHowH:{en:'How it works',hi:'कैसे काम करता है'}, howL:{en:'Three steps, about five minutes.',hi:'तीन कदम, लगभग पाँच मिनट।'},
-  s1h:{en:'Tell us about yourself',hi:'अपने बारे में बताएँ'}, s1p:{en:'Age, category, income, work — whatever applies. No login, no OTP.',hi:'उम्र, वर्ग, आय, काम — जो लागू हो। कोई लॉगिन नहीं, कोई OTP नहीं।'},
-  s2h:{en:'See your schemes',hi:'अपनी योजनाएँ देखें'}, s2p:{en:'The ones you appear eligible for, the ones to confirm, and the ones that apply on life events.',hi:'जिनके लिए आप पात्र दिखते हैं, जिनकी पुष्टि करनी है, और जो जीवन की घटनाओं पर मिलती हैं।'},
-  s3h:{en:'Apply',hi:'आवेदन करें'}, s3p:{en:'A next step for every scheme, a documents list, a printed slip or a WhatsApp message.',hi:'हर योजना का अगला कदम, दस्तावेज़ सूची, पर्ची प्रिंट करें या WhatsApp पर भेजें।'},
-  bySector:{en:'Browse by department',hi:'विभाग के अनुसार देखें'},
-  ftAbout:{en:'Free guidance on Central and Haryana Government schemes for the people of District Karnal. Nothing you enter is saved or sent anywhere.',hi:'ज़िला करनाल के नागरिकों के लिए केंद्र व हरियाणा सरकार की योजनाओं की निःशुल्क जानकारी। आपकी कोई जानकारी न सहेजी जाती है, न कहीं भेजी जाती है।'},
-  ftLinks:{en:'Useful portals',hi:'उपयोगी पोर्टल'}, ftDisc:{en:'Disclaimer',hi:'अस्वीकरण'},
-  ftCopy:{en:'District Administration, Karnal • Government of Haryana',hi:'ज़िला प्रशासन, करनाल • हरियाणा सरकार'},
-  heroSub:{en:'Find the government schemes meant for you',hi:'जानिए कौन-सी सरकारी योजनाएँ आपके लिए हैं'},
-  heroP:{en:'Answer a few simple questions. The questions change with your answers, so you are only asked what matters for you.',
-         hi:'कुछ आसान सवालों के जवाब दीजिए। सवाल आपके जवाबों के अनुसार बदलते हैं, इसलिए केवल वही पूछा जाएगा जो आपके काम का है।'},
-  f1:{en:'Usually 6 short questions',hi:'आम तौर पर 6 छोटे सवाल'},
-  f2:{en:'No login, nothing is saved',hi:'कोई लॉगिन नहीं, कोई जानकारी सहेजी नहीं जाती'},
-  f3:{en:'Central and Haryana Government schemes',hi:'केंद्र व हरियाणा सरकार की योजनाएँ'},
+  whoH:{en:'Who are you looking for?',hi:'किसके लिए देख रहे हैं?'}, deptH:{en:'By department',hi:'विभाग के अनुसार'},
+  nSchemes:{en:'{n} schemes',hi:'{n} योजनाएँ'}, nDepts:{en:'{n} departments',hi:'{n} विभाग'},
+  qsStudent:{en:'Student',hi:'विद्यार्थी'}, qsStudentS:{en:'School, ITI, polytechnic or college: scholarships, books, hostel, free passport fee.',hi:'स्कूल, आईटीआई, पॉलिटेक्निक या कॉलेज: छात्रवृत्ति, किताबें, हॉस्टल, पासपोर्ट शुल्क।'},
+  qsFarmer:{en:'Farmer, livestock, fish',hi:'किसान, पशुपालक, मछली पालक'}, qsFarmerS:{en:'Crop registration, insurance, horticulture, animals, dairy and fisheries.',hi:'फसल पंजीकरण, बीमा, बागवानी, पशु, डेयरी और मछली पालन।'},
+  qsWorker:{en:'Worker or labourer',hi:'श्रमिक या मज़दूर'}, qsWorkerS:{en:'Construction board and labour welfare board benefits, unorganised work, street vending.',hi:'निर्माण बोर्ड व श्रम कल्याण बोर्ड के लाभ, असंगठित कार्य, रेहड़ी-पटरी।'},
+  qsEnt:{en:'Business or self-help group',hi:'व्यवसाय या स्वयं सहायता समूह'}, qsEntS:{en:'Loans, subsidies, MSME and SHG support.',hi:'ऋण, अनुदान, MSME और SHG सहायता।'},
+  qsSelf:{en:'Myself or my family',hi:'स्वयं या परिवार'}, qsSelfS:{en:'Pensions, ration, gas, housing, health, help on a birth, marriage, death or illness.',hi:'पेंशन, राशन, गैस, आवास, स्वास्थ्य; जन्म, विवाह, मृत्यु या बीमारी पर सहायता।'},
+  qsNote:{en:'Tap to start with this already ticked',hi:'छूएँ, यह पहले से चुना मिलेगा'},
+  homeHowH:{en:'How it works',hi:'कैसे काम करता है'},
+  howL:{en:'Six questions, one list, one slip. No login, no OTP; your answers stay on your phone.',hi:'छह सवाल, एक सूची, एक पर्ची। कोई लॉगिन नहीं, कोई OTP नहीं; आपके जवाब आपके फ़ोन में ही रहते हैं।'},
+  s1h:{en:'Tell us about yourself',hi:'अपने बारे में बताएँ'}, s1p:{en:'Age, category, income, work, disability certificate, a recent event: only what applies, usually six screens.',hi:'उम्र, वर्ग, आय, काम, दिव्यांगता प्रमाणपत्र, हाल की घटना: केवल जो लागू हो, आम तौर पर छह स्क्रीन।'},
+  s2h:{en:'See your schemes',hi:'अपनी योजनाएँ देखें'}, s2p:{en:'The ones you appear eligible for come first, then the ones to confirm at the office, then the ones that apply on a birth, marriage, death or illness.',hi:'पहले वे जिनके लिए आप पात्र दिखते हैं, फिर जिनकी कार्यालय से पुष्टि करनी है, फिर जो जन्म, विवाह, मृत्यु या बीमारी पर मिलती हैं।'},
+  s3h:{en:'Apply',hi:'आवेदन करें'}, s3p:{en:'Every scheme shows its next step and office. Tick off the documents, print a two-page slip or send the list on WhatsApp.',hi:'हर योजना का अगला कदम और कार्यालय दिखता है। दस्तावेज़ टिक करें, दो पन्नों की पर्ची प्रिंट करें या सूची WhatsApp पर भेजें।'},
+  countH:{en:'Schemes available in Karnal',hi:'करनाल में उपलब्ध योजनाएँ'},
+  countCap:{en:'Central and Haryana Government schemes, from {d} departments, list updated {b}.',hi:'केंद्र और हरियाणा सरकार की योजनाएँ, {d} विभागों से, सूची {b} को अद्यतन।'},
+  aboutH:{en:'Nothing is saved, nothing is sent',hi:'कुछ सहेजा नहीं जाता, कुछ भेजा नहीं जाता'},
+  a1h:{en:'Private by construction',hi:'निजता, बनावट से'}, a1p:{en:'The matching runs inside your browser. There is no account, no server that sees your answers, and no cookie. A shared link carries only what you chose.',hi:'मिलान आपके ब्राउज़र में ही होता है। न खाता, न कोई सर्वर जो आपके जवाब देखे, न कुकी। साझा लिंक में केवल आपके चुने जवाब होते हैं।'},
+  a2h:{en:'Guidance, not a sanction',hi:'मार्गदर्शन, स्वीकृति नहीं'}, a2p:{en:'Eligibility is decided by the department after checking documents and Parivar Pehchan Patra data. The list is prepared by the District Administration, Karnal.',hi:'पात्रता का निर्णय विभाग दस्तावेज़ों व परिवार पहचान पत्र के आधार पर करता है। सूची ज़िला प्रशासन, करनाल ने तैयार की है।'},
+  ftSay:{en:'Six questions, and the schemes that are yours.',hi:'छह सवाल, और आपकी योजनाएँ।'},
+  ftLegal:{en:'District Administration, Karnal. Guidance, not a sanction.',hi:'ज़िला प्रशासन, करनाल। मार्गदर्शन, स्वीकृति नहीं।'},
+  ftCity:{en:'Karnal, Haryana',hi:'करनाल, हरियाणा'}, ftTime:{en:'Local time',hi:'स्थानीय समय'},
+  ftPortal:{en:'Antyodaya Saral portal',hi:'अंत्योदय सरल पोर्टल'},
+  ftGo:{en:'Start the six questions',hi:'छह सवाल शुरू करें'},
   start:{en:'Start',hi:'शुरू करें'}, next:{en:'Next',hi:'आगे'}, back:{en:'Back',hi:'पीछे'}, see:{en:'See my schemes',hi:'मेरी योजनाएँ देखें'},
   qof:{en:'Question {a} of up to {b}',hi:'सवाल {a} / अधिकतम {b}'},
   needAnswer:{en:'Choose an answer to continue.',hi:'आगे बढ़ने के लिए एक जवाब चुनें।'},
@@ -320,9 +324,8 @@ function render(){
   document.documentElement.lang = lang;
   document.title = T({en:'Meri Yojana – Karnal',hi:'मेरी योजना – करनाल'});
   document.getElementById('brand-t').textContent = T(W.brand); document.getElementById('brand-s').textContent = T(W.brandSub);
-  document.getElementById('gov-t').innerHTML = T(W.govT);
+  document.getElementById('tab-1').textContent = T(W.tab1); document.getElementById('tab-2').textContent = T(W.tab2); document.getElementById('tab-3').textContent = T(W.tab3);
   document.querySelector('main').className = st.screen === 'start' ? 'home' : '';
-  bar.parentNode.className = 'actions' + (st.screen === 'start' ? ' hidden' : '');
   renderFooter();
   document.getElementById('l-hi').setAttribute('aria-pressed', lang === 'hi');
   document.getElementById('l-en').setAttribute('aria-pressed', lang === 'en');
@@ -332,30 +335,59 @@ function render(){
   renderBar(); wire();
 }
 function sectorList(){ var out = []; S.forEach(function(x){ if (out.indexOf(x.sector) < 0) out.push(x.sector); }); return out.sort(); }
-function renderStart(){
-  var m = DATA.meta, ready = S.length > 0;
-  function qs(type, ic, t, sub){ return '<button type="button" data-start="'+type+'"><span class="ic">'+ic+'</span><span><b>'+esc(T(t))+'</b><small>'+esc(T(sub))+'</small></span><span class="arr">→</span></button>'; }
-  var h = '<section class="hero"><div class="wide hero-in"><div><span class="pill">'+esc(T(W.pill))+'</span><h1>'+esc(T(W.heroSub))+'</h1><p class="lead">'+esc(T(W.heroP))+'</p>'+
-    '<div class="cta"><button type="button" class="btn accent" id="b-next"'+(ready ? '' : ' disabled')+'>'+esc(T(ready ? W.start : W.loading))+(ready ? ' →' : '')+'</button>'+
-    '<button type="button" class="btn ghost" id="b-all"'+(ready ? '' : ' disabled')+'>'+esc(T(W.browseSee))+'</button></div>'+
-    '<ul class="facts"><li>'+esc(T(W.f1))+'</li><li>'+esc(T(W.f2))+'</li><li>'+esc(T(W.f3))+'</li></ul></div>'+
-    '<aside class="side"><h2>'+esc(T(W.whoH))+'</h2><div class="qs">'+qs('Student','🎓',W.qsStudent,W.qsStudentS)+qs('Farmer','🌾',W.qsFarmer,W.qsFarmerS)+qs('Worker','👷',W.qsWorker,W.qsWorkerS)+qs('Enterprise','🏪',W.qsEnt,W.qsEntS)+qs('','👪',W.qsSelf,W.qsSelfS)+'</div></aside></div></section>';
-  h += '<div class="wide"><div class="stats" id="stats"><div class="stat"><b>'+(m.schemes || 258)+'</b><span>'+esc(T(W.stSchemes))+'</span></div><div class="stat"><b>'+(ready ? sectorList().length : 23)+'</b><span>'+esc(T(W.stSectors))+'</span></div><div class="stat"><b>6</b><span>'+esc(T(W.stQ))+'</span></div><div class="stat"><b>2</b><span>'+esc(T(W.stLang))+'</span></div></div></div>';
-  h += '<section class="section"><div class="wide"><h2>'+esc(T(W.homeHowH))+'</h2><p class="lead">'+esc(T(W.howL))+'</p><div class="steps">'+
-    [['1',W.s1h,W.s1p],['2',W.s2h,W.s2p],['3',W.s3h,W.s3p]].map(function(x){ return '<div class="step"><div class="n">'+x[0]+'</div><h3>'+esc(T(x[1]))+'</h3><p>'+esc(T(x[2]))+'</p></div>'; }).join('')+'</div></div></section>';
-  h += '<section class="section"><div class="wide"><h2>'+esc(T(W.bySector))+'</h2><div class="sectors" id="sectors">'+(ready ? sectorList().map(function(k){ return '<button type="button" data-sector="'+esc(k)+'">'+esc(sectorName(k))+'</button>'; }).join('') : '')+'</div>';
-  h += '<p class="notice" id="notice">'+(m.built ? esc(fill(T(W.dataLine), {d: m.built.split(' ')[0], n: m.schemes})) : '')+
-    (updatedSince ? ' <span class="updated">'+esc(fill(T(W.updated), {d: m.built.split(' ')[0]}))+'</span>' : '')+
-    (loadError ? '<br><span class="err" role="alert">'+esc(T(W.loadFail))+'</span>' : '')+'</p></div></section>';
+function countFor(types){ return S.filter(function(x){ return types.indexOf(x.btype) >= 0; }).length; }
+var WHO = [['Student','art-student','qsStudent','qsStudentS',['Student']],['Farmer','art-farmer','qsFarmer','qsFarmerS',['Farmer']],['Worker','art-worker','qsWorker','qsWorkerS',['Worker']],
+  ['Enterprise','art-business','qsEnt','qsEntS',['Enterprise']],['','art-family','qsSelf','qsSelfS',['Individual','Household']]];
+function menuWho(){
+  return WHO.map(function(w, i){ return '<li data-reveal data-i="'+i+'"><button type="button" data-start="'+w[0]+'"><span class="art" aria-hidden="true"><svg><use href="#'+w[1]+'"/></svg></span>'+
+    '<span class="name"><span>'+esc(T(W[w[2]]))+'</span><span class="n">'+(S.length ? esc(fill(T(W.nSchemes), {n: countFor(w[4])})) : '')+'</span></span>'+
+    '<span class="desc">'+esc(T(W[w[3]]))+'</span></button></li>'; }).join('');
+}
+function menuDepts(){
+  var c = {}; S.forEach(function(x){ c[x.sector] = (c[x.sector] || 0) + 1; });
+  return sectorList().map(function(k, i){ return '<li data-reveal data-i="'+(i % 8)+'"><button type="button" data-sector="'+esc(k)+'"><span class="name"><span>'+esc(sectorName(k))+'</span><span class="n">'+esc(fill(T(W.nSchemes), {n: c[k]}))+'</span></span></button></li>'; }).join('');
+}
+function accordion(){
+  return [['s1','s1h','s1p','art-phone'],['s2','s2h','s2p','art-list'],['s3','s3h','s3p','art-counter']].map(function(x, i){
+    return '<button type="button" class="stage '+x[0]+(i === 0 ? ' open' : '')+'" data-reveal data-i="'+i+'" aria-expanded="'+(i === 0)+'"><span class="nm">'+esc(T(W[x[1]]))+'</span><span class="tx">'+esc(T(W[x[2]]))+'</span><svg class="art" aria-hidden="true"><use href="#'+x[3]+'"/></svg></button>'; }).join('');
+}
+function noticeLine(){
+  var m = DATA.meta, h = '';
+  if (updatedSince && m.built) h += '<span class="updated">'+esc(fill(T(W.updated), {d: m.built.split(' ')[0]}))+'</span>';
+  if (loadError) h += '<span class="err" role="alert">'+esc(T(W.loadFail))+'</span>';
   return h;
 }
-function renderFooter(){
-  var m = DATA.meta;
-  document.getElementById('ftr').innerHTML = '<div class="wide"><div><div class="fb"><img src="emblem.png" alt="" width="40" height="50"><b>'+esc(T(W.brand))+'</b></div><p>'+esc(T(W.ftAbout))+'</p></div>'+
-    '<div><h2>'+esc(T(W.ftLinks))+'</h2><ul><li><a href="#/all">'+esc(T(W.browse))+'</a></li><li><a href="https://saralharyana.gov.in" target="_blank" rel="noopener">saralharyana.gov.in ↗</a></li><li><a href="https://haryana.gov.in" target="_blank" rel="noopener">haryana.gov.in ↗</a></li><li><a href="https://india.gov.in" target="_blank" rel="noopener">india.gov.in ↗</a></li></ul></div>'+
-    '<div><h2>'+esc(T(W.ftDisc))+'</h2><p>'+esc(T(W.foot))+'</p></div></div>'+
-    '<div class="copy">'+esc(T(W.ftCopy))+(m.built ? ' • '+esc(fill(T(W.dataLine), {d: m.built.split(' ')[0], n: m.schemes})) : '')+'</div>';
+function renderStart(){
+  var m = DATA.meta, ready = S.length > 0, built = m.built ? m.built.split(' ')[0] : '24-09-2026', nd = ready ? sectorList().length : 23;
+  var h = '<section class="masthead-wrap"><div class="band" aria-hidden="true">'+
+    '<div class="cell c1 tall"></div><div class="cell art span2"><svg><use href="#art-ppp"/></svg></div><div class="cell c2"></div><div class="cell art"><svg><use href="#art-wheat"/></svg></div><div class="cell c3 hide-sm"></div>'+
+    '<div class="cell art"><svg><use href="#art-rupee"/></svg></div><div class="cell c4"></div><div class="cell art"><svg><use href="#art-house"/></svg></div><div class="cell c2 hide-sm"></div><div class="cell c3 hide-sm"></div></div>'+
+    '<div class="masthead"><div class="tt"><h1 class="lines" id="title"><span class="line"><span data-line>'+esc(T(W.title1))+'</span></span><span class="line"><span data-line>'+esc(T(W.title2))+'</span></span></h1>'+
+    '</div><p class="standfirst" data-load>'+esc(T(W.standfirst))+'</p><div class="cta"><button type="button" class="btn accent" id="b-next" data-load'+(ready ? '' : ' disabled')+'>'+esc(T(ready ? W.start : W.loading))+'</button><a class="link" href="#/all" id="b-all">'+esc(T(W.browseSee))+'</a></div></div></section>';
+  h += '<section class="chapter who"><div class="menu-h" data-reveal><h2>'+esc(T(W.whoH))+'</h2><span class="count" id="who-n">'+(ready ? esc(fill(T(W.nSchemes), {n: S.length})) : '')+'</span></div><ul class="menu" id="menu-who">'+menuWho()+'</ul>'+
+    '<div class="menu-h menu-h2" data-reveal id="depts"><h2>'+esc(T(W.deptH))+'</h2><span class="count" id="dept-n">'+(ready ? esc(fill(T(W.nDepts), {n: nd})) : '')+'</span></div><ul class="menu depts" id="menu-depts">'+(ready ? menuDepts() : '')+'</ul></section>';
+  h += '<section class="chapter how" id="how"><div class="intro"><h2 data-reveal>'+esc(T(W.homeHowH))+'</h2><p data-reveal data-i="1">'+esc(T(W.howL))+'</p></div><div class="acc" id="acc">'+accordion()+'</div></section>';
+  h += '<section class="chapter count-chapter"><h2 data-reveal>'+esc(T(W.countH))+'</h2><div><p class="figure"><span id="fig" data-count>'+(m.schemes || 258)+'</span></p><p class="caption" id="fig-cap" data-reveal data-i="2">'+esc(fill(T(W.countCap), {d: nd, b: built}))+'</p></div><p class="source" id="notice">'+noticeLine()+'</p></section>';
+  h += '<section class="about-wrap"><div class="panel" id="panel"><h2 data-reveal>'+esc(T(W.aboutH))+'</h2><div class="blocks" id="blocks">'+blocks()+'</div><div class="emblem"><img src="emblem.png" alt="" width="120" height="150" loading="lazy"></div></div></section>';
+  return h;
 }
+function blocks(){
+  return '<div data-reveal data-i="0"><h3>'+esc(T(W.a1h))+'</h3><p>'+esc(T(W.a1p))+'</p></div><div data-reveal data-i="1"><h3>'+esc(T(W.a2h))+'</h3><p>'+esc(T(W.a2p))+'</p></div><div data-reveal data-i="2"><button type="button" class="btn accent" id="b-start2">'+esc(T(W.start))+'</button></div>';
+}
+function renderFooter(){
+  document.getElementById('ftr').innerHTML = '<div class="tile t-say"><p>'+esc(T(W.ftSay))+'</p><small>'+esc(T(W.ftLegal))+'</small></div>'+
+    '<div class="tile t-nav"><ul><li><a class="link" href="#/">'+esc(T(W.start))+'</a></li><li><a class="link" href="#/all">'+esc(T(W.browse))+'</a></li><li><a class="link" href="https://haryana.gov.in" target="_blank" rel="noopener">haryana.gov.in</a></li><li><a class="link" href="https://india.gov.in" target="_blank" rel="noopener">india.gov.in</a></li></ul></div>'+
+    '<div class="tile t-time"><span>'+esc(T(W.ftCity))+'</span><span><b id="clock"></b>'+esc(T(W.ftTime))+'</span></div>'+
+    '<div class="tile t-mail"><span>'+esc(T(W.ftPortal))+'</span><a class="link" href="https://saralharyana.gov.in" target="_blank" rel="noopener">saralharyana.gov.in</a></div>'+
+    '<div class="tile t-mark" aria-hidden="true">'+esc(T(W.brand).split(' – ')[0])+'</div>'+
+    '<a class="tile t-go" href="#/" id="b-go"><span>'+esc(T(W.ftGo))+'</span><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M8 28h38M30 12l16 16-16 16" fill="none" stroke="currentColor" stroke-width="4"/></svg></a>';
+  clock();
+}
+function clock(){
+  var el = document.getElementById('clock'); if (!el) return;
+  try { el.textContent = new Date().toLocaleTimeString(lang === 'hi' ? 'hi-IN' : 'en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }); } catch (e) { el.textContent = ''; }
+}
+setInterval(clock, 30000);
 function renderQ(q){
   var d = st.draft, h = progress() + '<h1 class="q" id="qh" tabindex="-1">'+esc(T(Q[q].title))+'</h1><p class="hint">'+esc(T(Q[q].hint))+'</p>' + sayBtn();
   function list(arr, isOn, single){ return arr.map(function(o){ return optBtn(o, isOn(o.v), single); }).join(''); }
@@ -399,7 +431,8 @@ function renderQ(q){
 /* ---------------------------------------------------------------- read aloud (Web Speech API; never blocks the page)
    The button reads the question and its options, or the card's title, benefit and next step. */
 var canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
-function sayBtn(){ return canSpeak ? '<button type="button" class="say" aria-pressed="false">🔊 '+esc(T(W.listen))+'</button>' : ''; }
+var SPK = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+function sayBtn(){ return canSpeak ? '<button type="button" class="say" aria-pressed="false">'+SPK+' '+esc(T(W.listen))+'</button>' : ''; }
 function voiceFor(){
   var want = lang === 'hi' ? /^hi/i : /^en[-_]in/i, vs = speechSynthesis.getVoices();
   return vs.filter(function(v){ return want.test(v.lang); })[0] || (lang === 'en' ? vs.filter(function(v){ return /^en/i.test(v.lang); })[0] : null);
@@ -419,9 +452,9 @@ function speak(btn){
   speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(textToSay(btn).replace(/\s+/g, ' ').slice(0, 1500));
   u.lang = lang === 'hi' ? 'hi-IN' : 'en-IN'; if (v) u.voice = v; u.rate = 0.9;
-  app.querySelectorAll('.say').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); b.innerHTML = '🔊 '+esc(T(W.listen)); });
-  btn.setAttribute('aria-pressed', 'true'); btn.innerHTML = '⏹ '+esc(T(W.stopListen));
-  u.onend = u.onerror = function(){ btn.setAttribute('aria-pressed', 'false'); btn.innerHTML = '🔊 '+esc(T(W.listen)); };
+  app.querySelectorAll('.say').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); b.innerHTML = SPK+' '+esc(T(W.listen)); });
+  btn.setAttribute('aria-pressed', 'true'); btn.innerHTML = SPK+' '+esc(T(W.stopListen));
+  u.onend = u.onerror = function(){ btn.setAttribute('aria-pressed', 'false'); btn.innerHTML = SPK+' '+esc(T(W.listen)); };
   try { speechSynthesis.speak(u); } catch (e) { u.onend(); }
 }
 function sectorName(sec){ return lang === 'hi' && SECTOR[sec] ? SECTOR[sec] : sec; }
@@ -602,7 +635,7 @@ function waText(){
 }
 function renderBar(){
   var s = st.screen, h;
-  if (s === 'start') h = '';
+  if (s === 'start') h = '<button type="button" class="btn accent" id="b-next-bar"'+(S.length ? '' : ' disabled')+'>'+esc(T(S.length ? W.start : W.loading))+'</button>';
   else if (s === 'all') h = '<button type="button" class="btn primary" id="b-again">'+esc(T(W.findMine))+'</button>';
   else if (s === 'results') h = '<button type="button" class="btn" id="b-back">'+esc(T(W.back))+'</button><button type="button" class="btn primary" id="b-again">'+esc(T(W.again))+'</button>';
   else if (s === 'scheme') h = '<button type="button" class="btn primary" id="b-again">'+esc(T(W.findMine))+'</button>';
@@ -611,6 +644,23 @@ function renderBar(){
     h = '<button type="button" class="btn" id="b-back">'+esc(T(W.back))+'</button><button type="button" class="btn primary" id="b-next">'+esc(T(last ? W.see : W.next))+'</button>';
   }
   bar.innerHTML = h;
+}
+/* Section entrances, once, when the element is most of the way into view; nothing stays hidden if the observer is missing. */
+function reveals(){
+  var els = app.querySelectorAll('[data-reveal]:not(.is-in):not([data-seen])');
+  if (!('IntersectionObserver' in window)){ els.forEach(function(e){ e.classList.add('is-in'); }); return; }
+  var io = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
+  els.forEach(function(e){ e.setAttribute('data-seen', '1'); io.observe(e); });
+}
+/* The one figure counts up to its value once; the real number is in the text throughout for readers and search. */
+function roll(){
+  var el = app.querySelector('[data-count]:not([data-seen])'); if (!el) return;
+  el.setAttribute('data-seen', '1');
+  var value = parseInt(el.textContent, 10); if (!value || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var io = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if (!e.isIntersecting) return; io.unobserve(e.target);
+    var t0 = performance.now(); (function step(now){ var p = Math.min(1, (now - t0) / 1100), k = 1 - Math.pow(1 - p, 4);
+      el.textContent = String(Math.round(value * k)); if (p < 1) requestAnimationFrame(step); else el.textContent = String(value); })(t0); }); }, { rootMargin: '0px 0px -15% 0px' });
+  io.observe(el);
 }
 function wire(){
   app.querySelectorAll('.opt').forEach(function(b){
@@ -642,9 +692,13 @@ function wire(){
   }
   var n = document.getElementById('b-next');
   if (n) n.onclick = function(){ if (st.screen === 'start'){ if (!S.length) return; st.history = ['types']; go('types'); } else commit(); };
+  ['b-next-bar', 'b-start2', 'b-go'].forEach(function(id){ var b = document.getElementById(id); if (b) b.onclick = function(e){ e.preventDefault(); if (!S.length) return; reset(); st.history = ['types']; go('types'); }; });
+  app.querySelectorAll('.acc .stage:not([data-wired])').forEach(function(b){ b.setAttribute('data-wired', '1'); b.addEventListener('click', function(){
+    app.querySelectorAll('.acc .stage').forEach(function(x){ x.classList.toggle('open', x === b); x.setAttribute('aria-expanded', x === b); }); }); });
+  reveals(); roll();
   var b = document.getElementById('b-back'); if (b) b.onclick = function(){ if (history.state && history.state.depth > 0) history.back(); else back(); };
   var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); remember(); window.scrollTo(0,0); };
-  var al = document.getElementById('b-all'); if (al) al.onclick = function(){ st.screen = 'all'; st.filter = null; render(); remember(); window.scrollTo(0,0); };
+  var al = document.getElementById('b-all'); if (al) al.onclick = function(e){ e.preventDefault(); st.screen = 'all'; st.filter = null; render(); remember(); window.scrollTo(0,0); };
   app.querySelectorAll('[data-start]:not([data-wired])').forEach(function(b){ b.setAttribute('data-wired', '1'); b.addEventListener('click', function(){
     if (!S.length) return;
     reset(); var t = b.getAttribute('data-start'); st.ans.types = t ? ['Individual','Household',t] : ['Individual','Household']; st.history = ['types'];
@@ -670,7 +724,7 @@ function wire(){
 }
 var tsize = 0;
 function applySize(){
-  document.documentElement.className = tsize ? 'big' + tsize : '';
+  document.documentElement.classList.remove('big1', 'big2'); if (tsize) document.documentElement.classList.add('big' + tsize);
   document.getElementById('tsize').setAttribute('aria-pressed', tsize ? 'true' : 'false');
   document.getElementById('tsize-l').textContent = tsize === 0 ? 'अ+' : tsize === 1 ? 'अ++' : 'अ';
 }
@@ -690,8 +744,8 @@ function boot(d){
   fromHash();
   if (st.screen === 'start' && app.querySelector('.hero')){   // keep the hero that is already painted; just finish it
     var tmp = document.createElement('div'); tmp.innerHTML = renderStart();
-    ['b-next', 'b-all', 'stats', 'sectors', 'notice'].forEach(function(id){ var a = document.getElementById(id), b = tmp.querySelector('#' + id); if (a && b) a.replaceWith(b); });
-    renderFooter(); wire();
+    ['b-next', 'who-n', 'menu-who', 'dept-n', 'menu-depts', 'acc', 'fig', 'fig-cap', 'notice', 'blocks'].forEach(function(id){ var a = document.getElementById(id), b = tmp.querySelector('#' + id); if (a && b) a.replaceWith(b); });
+    renderFooter(); renderBar(); wire();
   } else render();
   remember(true);
 }

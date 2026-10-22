@@ -269,3 +269,30 @@ end and life-event schemes in another.
   availability for Listen, and the Open Graph preview on WhatsApp (the `og:url` / `og:image` tags assume
   `https://meri-yojana-karnal.onrender.com/`; change them in `public/index.html` if the site gets another name
   or a custom domain).
+
+
+---
+
+# Design round with tasteskill (23 October 2026)
+
+Method: `.agents/skills/design-taste-frontend` (lint, inspect at 1440/768/390, critique). Before: 9 FAIL, 7 WARN
+(eyebrow pill, emoji, gradient hero, 9 shadows, hairlines, no focal point, still page). After: **0 FAIL, 0 WARN**
+with `few-pictures` and `no-footage` allowed (no photographs exist and the open collections were unreachable).
+
+Direction dealt: **Colour chapters** (seed 516950161, nonprofit sector, palette and type kept). No redraws.
+Idea: *the painted wall-notices of a Haryana village become the colour chapters.* Live thing: the "who are you
+looking for?" list, whose rows carry the real scheme counts and start the questions with that type ticked.
+
+```
+ROUND 2
+Seen in one second: the mosaic band of teal, saffron and four drawn artefacts; then the title at the 42% axis.
+Idea (one sentence): the village wall-notice, one colour per wall, becomes the page's chapters.
+Live thing: the who-is-it-for list with real counts; the department list with counts; the local clock.
+Layout words by section: hero=mosaic+axis / who=menu / how=accordion strip / count=statement / about=inset split / footer=tiles
+Scores: design 6.5 · usability 8 · creativity 7 · content 8 → overall 7.2
+Caps applied: fewer than four real pictures → design ≤ 6.5; idea passes weakly for a neighbouring district → creativity ≤ 7.
+Top three problems:
+1. No photographs: the mosaic and the list carry drawings (desktop-fold.jpg). Needs 4–6 district photographs.
+2. The accordion slivers read their names sideways on desktop (desktop-page-01.jpg); fine on the phone, where they stack.
+3. Lighthouse Performance 89 (was 97): the display font and the larger stylesheet cost ~1 s of first paint on slow 4G.
+```

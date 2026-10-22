@@ -58,3 +58,22 @@ record Render shows.
 
 If the master sheet gains Hindi columns, export them as `benefit_hi`, `benefit_short_hi`, `how_hi`, `docs_hi`
 (list) and `nodal_hi`; the page will prefer them automatically.
+
+## Design
+
+The home page follows the **tasteskill** art-direction method (`.agents/skills/design-taste-frontend`, installed with
+`npx skills add Leonxlnx/taste-skill`). The dealt direction is recorded in `.taste-skill/direction.json`
+(*Colour chapters*, seed 516950161, palette and type kept from the brand): every chapter is one flat colour field
+holding one thing, the idea being the painted wall-notices of Haryana villages. To check a change against the
+house rules:
+
+```bash
+SK=.agents/skills/design-taste-frontend
+node $SK/scripts/lint.mjs public/index.html public/style.css public/app.js
+CHROME_PATH=/path/to/chromium node $SK/scripts/inspect.mjs public/index.html --out .taste-skill/after --allow few-pictures,no-footage
+```
+
+`few-pictures` and `no-footage` are allowed only because the district has not yet supplied photographs: the
+mosaic band and the list use drawings of the subject's own artefacts (`<symbol id="art-…">` in `index.html`).
+Replace any mosaic cell with a real photograph (`<img>` with `object-fit: cover`, greyscale) when one exists, and
+drop the allowance.
