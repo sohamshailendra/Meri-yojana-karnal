@@ -1,0 +1,32 @@
+# Render Blueprint. Render → New → Blueprint → pick this repository.
+# (Or create a Static Site by hand with the same build command and publish directory.)
+services:
+  - type: web
+    name: meri-yojana-karnal
+    runtime: static
+    buildCommand: node test/check.js
+    staticPublishPath: ./public
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=()
+      # Pages and the service worker are always re-checked, so data updates reach people straight away
+      - path: /
+        name: Cache-Control
+        value: no-cache
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache
