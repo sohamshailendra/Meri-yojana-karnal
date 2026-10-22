@@ -55,5 +55,10 @@ check('files the page, manifest and service worker need are present', function (
   JSON.parse(fs.readFileSync(path.join(PUB, 'manifest.webmanifest'), 'utf8'));
 });
 
+check('engine snapshot unchanged', function () {
+  var r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'engine.test.js')], { encoding: 'utf8' });
+  assert.strictEqual(r.status, 0, r.stdout + r.stderr);
+});
+
 console.log(failures ? '\n' + failures + ' check(s) failed' : '\nAll checks passed (' + (DATA ? DATA.schemes.length : 0) + ' schemes)');
 process.exit(failures ? 1 : 0);
