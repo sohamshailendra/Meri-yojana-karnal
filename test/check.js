@@ -56,7 +56,7 @@ check('index.html references files that exist, and no inline script or style (CS
   var html = read('index.html');
   assert(!/<script>|<style>|style="/.test(html), 'inline script or style in index.html');
   assert(!/style="/.test(read('app.js')), 'inline style attribute in app.js');
-  var refs = html.match(/(?:href|src)="([^"]+)"/g).map(function (m) { return m.split('"')[1]; }).filter(function (u) { return !/^https?:/.test(u); });
+  var refs = html.match(/(?:href|src)="([^"]+)"/g).map(function (m) { return m.split('"')[1]; }).filter(function (u) { return !/^(https?:|#)/.test(u); });
   refs.forEach(function (u) { assert(fs.existsSync(path.join(PUB, u)), 'missing public/' + u); });
   JSON.parse(read('manifest.webmanifest'));
   read('sw.js').match(/'([\w./-]+\.(?:html|css|js|json|svg|png|woff2|webmanifest))'/g).forEach(function (m) {

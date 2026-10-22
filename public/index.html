@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Meri Yojana – Karnal | मेरी योजना – करनाल</title>
 <meta name="description" content="Find the Central and Haryana Government schemes you can apply for in District Karnal. Answer up to 8 simple questions, in Hindi or English. | करनाल में आपके लिए कौन-सी सरकारी योजनाएँ हैं, जानिए।">
-<meta name="theme-color" content="#1F2F5C">
+<meta name="theme-color" content="#0E5A57">
 <link rel="canonical" href="https://meri-yojana-karnal.onrender.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Meri Yojana – Karnal">
@@ -22,25 +22,54 @@
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preload" href="fonts/mukta-700-devanagari.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/baloo2-700-devanagari.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/mukta-400-devanagari.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="data.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <div class="brand" id="brand">मेरी योजना<small>ज़िला करनाल</small></div>
+<div class="gov" role="region" aria-label="Government of Haryana / हरियाणा सरकार"><div class="wide">
+  <span class="gov-t" id="gov-t"><b>हरियाणा सरकार</b> • ज़िला प्रशासन, करनाल • Government of Haryana</span>
+  <button type="button" class="tsize" id="tsize" aria-pressed="false"><span id="tsize-l">अ+</span><span class="vh" id="tsize-t">बड़े अक्षर</span></button>
+</div></div>
+<header class="top"><div class="wide">
+  <a class="brand" id="brand" href="#/"><img src="emblem.png" alt="हरियाणा सरकार का राजचिह्न" width="44" height="55"><span><b id="brand-t">मेरी योजना – करनाल</b><small id="brand-s">सरकारी योजना खोजक • ज़िला प्रशासन, करनाल</small></span></a>
   <div class="tools">
-    <button type="button" class="tsize" id="tsize" aria-pressed="false"><span id="tsize-l">अ+</span><span class="vh" id="tsize-t">बड़े अक्षर</span></button>
     <div class="lang" role="group" aria-label="Language / भाषा">
       <button type="button" id="l-hi" aria-pressed="true">हिं</button>
       <button type="button" id="l-en" aria-pressed="false">EN</button>
     </div>
   </div>
 </div></header>
-<main><div class="wrap" id="app" aria-live="polite"><div class="screen"><section class="hero"><h1>मेरी योजना<span class="sub">जानिए कौन-सी सरकारी योजनाएँ आपके लिए हैं</span></h1><p>कुछ आसान सवालों के जवाब दीजिए। सवाल आपके जवाबों के अनुसार बदलते हैं, इसलिए केवल वही पूछा जाएगा जो आपके काम का है।</p><ul class="facts"><li>आम तौर पर 6 छोटे सवाल, 8 से ज़्यादा कभी नहीं</li><li>आपकी कोई जानकारी न सहेजी जाती है, न कहीं भेजी जाती है</li><li>करनाल में उपलब्ध केंद्र और हरियाणा सरकार की योजनाएँ</li></ul><noscript><p class="err">इस पेज के लिए JavaScript चालू होना चाहिए। / This page needs JavaScript.</p></noscript></section></div></div></main>
-<nav class="actions"><div class="wrap" id="actbar"></div></nav>
+<main class="home"><div id="app" aria-live="polite"><div class="screen">
+<section class="hero"><div class="wide hero-in">
+  <div>
+    <span class="pill">ज़िला प्रशासन, करनाल • हरियाणा सरकार</span>
+    <h1>जानिए कौन-सी सरकारी योजनाएँ आपके लिए हैं</h1>
+    <p class="lead">कुछ आसान सवालों के जवाब दीजिए। सवाल आपके जवाबों के अनुसार बदलते हैं, इसलिए केवल वही पूछा जाएगा जो आपके काम का है।</p>
+    <div class="cta"><button type="button" class="btn accent" id="b-next" disabled>लोड हो रहा है…</button><button type="button" class="btn ghost" id="b-all" disabled>सभी योजनाएँ देखें</button></div>
+    <ul class="facts"><li>आम तौर पर 6 छोटे सवाल</li><li>कोई लॉगिन नहीं, कोई जानकारी सहेजी नहीं जाती</li><li>केंद्र व हरियाणा सरकार की योजनाएँ</li></ul>
+  </div>
+  <aside class="side"><h2>किसके लिए देख रहे हैं?</h2><div class="qs">
+    <button type="button" data-start="Student"><span class="ic">🎓</span><span><b>विद्यार्थी</b><small>छात्रवृत्ति, किताबें, हॉस्टल</small></span><span class="arr">→</span></button>
+    <button type="button" data-start="Farmer"><span class="ic">🌾</span><span><b>किसान / पशुपालक</b><small>फसल, बीमा, पशु, मछली पालन</small></span><span class="arr">→</span></button>
+    <button type="button" data-start="Worker"><span class="ic">👷</span><span><b>श्रमिक / मज़दूर</b><small>निर्माण, फ़ैक्टरी, असंगठित कार्य</small></span><span class="arr">→</span></button>
+    <button type="button" data-start="Enterprise"><span class="ic">🏪</span><span><b>व्यवसाय / स्वयं सहायता समूह</b><small>ऋण, अनुदान, SHG</small></span><span class="arr">→</span></button>
+    <button type="button" data-start=""><span class="ic">👪</span><span><b>स्वयं या परिवार</b><small>पेंशन, राशन, आवास, स्वास्थ्य</small></span><span class="arr">→</span></button>
+  </div></aside>
+</div></section>
+<div class="wide"><div class="stats" id="stats"><div class="stat"><b>258</b><span>योजनाएँ</span></div><div class="stat"><b>23</b><span>विभाग</span></div><div class="stat"><b>6</b><span>आसान सवाल</span></div><div class="stat"><b>2</b><span>भाषाएँ</span></div></div></div>
+<section class="section"><div class="wide"><h2>कैसे काम करता है</h2><p class="lead">तीन कदम, लगभग पाँच मिनट।</p><div class="steps">
+  <div class="step"><div class="n">1</div><h3>अपने बारे में बताएँ</h3><p>उम्र, वर्ग, आय, काम — जो लागू हो। कोई लॉगिन नहीं, कोई OTP नहीं।</p></div>
+  <div class="step"><div class="n">2</div><h3>अपनी योजनाएँ देखें</h3><p>जिनके लिए आप पात्र दिखते हैं, जिनकी पुष्टि करनी है, और जो जीवन की घटनाओं पर मिलती हैं।</p></div>
+  <div class="step"><div class="n">3</div><h3>आवेदन करें</h3><p>हर योजना का अगला कदम, दस्तावेज़ सूची, पर्ची प्रिंट करें या WhatsApp पर भेजें।</p></div>
+</div></div></section>
+<section class="section"><div class="wide"><h2>विभाग के अनुसार देखें</h2><div class="sectors" id="sectors"></div><p class="notice" id="notice">258 योजनाएँ, सूची 24-09-2026 को अद्यतन।</p>
+<noscript><p class="err">इस पेज के लिए JavaScript चालू होना चाहिए। / This page needs JavaScript.</p></noscript></div></section>
+</div></div></main>
+<nav class="actions hidden"><div class="wrap" id="actbar"></div></nav>
+<footer class="site" id="ftr"></footer>
 <script src="engine.js" defer></script>
 <script src="app.js" defer></script>
 </body>

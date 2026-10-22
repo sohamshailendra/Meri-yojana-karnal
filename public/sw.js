@@ -2,9 +2,10 @@
    Page, code and the scheme list: network first (always the latest when online), saved copy when offline.
    Fonts and icons: saved copy first. */
 'use strict';
-var VERSION = 'meri-yojana-v2';
+var VERSION = 'meri-yojana-v3';
 var CORE = ['./', 'index.html', 'style.css', 'engine.js', 'app.js', 'data.json', 'manifest.webmanifest',
-  'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
+  'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'emblem.png',
+  'fonts/baloo2-700-devanagari.woff2', 'fonts/baloo2-700-latin.woff2',
   'fonts/mukta-400-devanagari.woff2', 'fonts/mukta-400-latin.woff2', 'fonts/mukta-700-devanagari.woff2', 'fonts/mukta-700-latin.woff2'];
 var FRESH = /\/(index\.html|style\.css|engine\.js|app\.js|data\.json)$/;
 

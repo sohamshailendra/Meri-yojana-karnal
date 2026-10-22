@@ -7,7 +7,8 @@ documents checklist. Nothing is saved or sent anywhere: all matching runs in the
 | File | What it is |
 |---|---|
 | `public/index.html` | The page: head, a static Hindi start screen (paints before anything else loads), script tags |
-| `public/style.css` | Styles, light and dark, print slip, self-hosted Mukta font faces |
+| `public/style.css` | Design: teal and saffron theme, light and dark, print slip, self-hosted Mukta and Baloo 2 font faces |
+| `public/emblem.png` | Government of Haryana emblem (header, footer, preview image) |
 | `public/engine.js` | Matching and question engine (`YojanaEngine`); also loads in Node for the tests |
 | `public/app.js` | Interface: words in both languages, questions, results, history, print, WhatsApp |
 | `public/data.json` | The 258 schemes, exported from `Karnal_Schemes_Master` (see **Updating the data**) |
@@ -42,9 +43,10 @@ record Render shows.
 
 ## Updating the data
 
-1. Export the page from the scheme master as before (the one-file HTML with the data inside), then:
+1. Run the district's `yojana_kit` (`python build_schemes.py Karnal_Schemes_Master_vX_Y.xlsx`) as before. It writes
+   `schemes.json` (and the one-file app and the Data Gaps workbook). Then:
    ```bash
-   node scripts/import-export.js path/to/Meri_Yojana_Karnal.html
+   node scripts/import-export.js path/to/schemes.json        # or the exported Karnal_Yojana_App.html
    ```
    It rewrites `public/data.json` and lists schemes added or removed.
 2. Re-apply the corrections listed under *Corrections already made in the page* in `DATA-ISSUES.md`, unless the
