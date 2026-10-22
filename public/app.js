@@ -24,6 +24,12 @@ var W = {
   updated:{en:'New: the scheme list was updated on {d}.',hi:'नया: योजना सूची {d} को अद्यतन हुई।'},
   loadFail:{en:'The scheme list could not be loaded. Check your connection and reload the page.',hi:'योजना सूची लोड नहीं हो सकी। इंटरनेट जाँचें और पेज दोबारा खोलें।'},
   loading:{en:'Loading…',hi:'लोड हो रहा है…'},
+  browse:{en:'All schemes',hi:'सभी योजनाएँ'}, allH:{en:'All schemes',hi:'सभी योजनाएँ'},
+  allNote:{en:'Search by name in Hindi or English, or pick a sector. Spelling need not be exact.',hi:'हिंदी या अंग्रेज़ी में नाम लिखें, या विभाग चुनें। स्पेलिंग सही होना ज़रूरी नहीं।'},
+  searchPh:{en:'e.g. pension, scholarship, LPG',hi:'जैसे पेंशन, छात्रवृत्ति, आवास'},
+  allSectors:{en:'All sectors',hi:'सभी विभाग'}, allTypes:{en:'Everyone',hi:'सभी'},
+  nMatch:{en:'{n} schemes',hi:'{n} योजनाएँ'}, noMatch:{en:'Nothing found. Try another word or clear the filters.',hi:'कुछ नहीं मिला। दूसरा शब्द लिखें या फ़िल्टर हटाएँ।'},
+  showMore:{en:'Show {n} more',hi:'{n} और दिखाएँ'},
   listen:{en:'Listen',hi:'सुनें'}, stopListen:{en:'Stop',hi:'रोकें'}, tsize:{en:'Larger text',hi:'बड़े अक्षर'},
   noVoice:{en:'This phone has no voice for this language.',hi:'इस फ़ोन में इस भाषा की आवाज़ नहीं है।'},
   resH:{en:'Your schemes',hi:'आपकी योजनाएँ'},
@@ -210,13 +216,14 @@ function draftFor(q){
    Each screen is a browser history entry, so the phone's Back button moves between questions instead of
    leaving the site. Results and single schemes have addresses in the fragment (#/...), which browsers never
    send to a server: nothing a person enters leaves the phone. */
-function snapshot(){ return JSON.parse(JSON.stringify({ screen: st.screen, ans: st.ans, history: st.history, skipped: st.skipped, scheme: st.scheme || null })); }
+function snapshot(){ return JSON.parse(JSON.stringify({ screen: st.screen, ans: st.ans, history: st.history, skipped: st.skipped, scheme: st.scheme || null, filter: st.filter || null })); }
 function b64(o){ return btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
 function unb64(t){ try { return JSON.parse(atob(t.replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; } }
 function urlFor(){
   if (st.screen === 'start') return '#/';
   if (st.screen === 'results') return '#/results/' + b64({ a: st.ans, h: st.history, k: st.skipped });
   if (st.screen === 'scheme') return '#/scheme/' + encodeURIComponent(st.scheme);
+  if (st.screen === 'all') return '#/all';
   return '#/q/' + (st.history.indexOf(st.screen) + 1);
 }
 function remember(replace){
@@ -224,13 +231,14 @@ function remember(replace){
   try { history[replace ? 'replaceState' : 'pushState']({ st: snapshot(), depth: replace ? depth : depth + 1 }, '', urlFor()); } catch (e) {}
 }
 function restore(snap){
-  st = { screen: snap.screen, ans: snap.ans || {}, history: snap.history || [], skipped: snap.skipped || {}, scheme: snap.scheme, draft: null, err: '', ticked: {} };
-  if (st.screen !== 'start' && st.screen !== 'results' && st.screen !== 'scheme') st.draft = draftFor(st.screen);
+  st = { screen: snap.screen, ans: snap.ans || {}, history: snap.history || [], skipped: snap.skipped || {}, scheme: snap.scheme, filter: snap.filter || null, draft: null, err: '', ticked: {} };
+  if (['start','results','scheme','all'].indexOf(st.screen) < 0) st.draft = draftFor(st.screen);
 }
 function fromHash(){
   var h = location.hash, m;
   if ((m = /^#\/results\/([\w-]+)$/.exec(h)) && (m = unb64(m[1])) && m.a && m.h) restore({ screen: 'results', ans: m.a, history: m.h, skipped: m.k });
   else if ((m = /^#\/scheme\/([\w-]+)$/.exec(h))) restore({ screen: 'scheme', scheme: decodeURIComponent(m[1]) });
+  else if (h === '#/all') restore({ screen: 'all' });
   else reset();
 }
 window.addEventListener('popstate', function(e){
@@ -297,7 +305,7 @@ function render(){
   document.getElementById('l-en').setAttribute('aria-pressed', lang === 'en');
   document.getElementById('tsize').setAttribute('aria-label', T(W.tsize));
   var s = st.screen;
-  app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : s === 'scheme' ? renderScheme() : renderQ(s))+'</div>';
+  app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : s === 'scheme' ? renderScheme() : s === 'all' ? renderAll() : renderQ(s))+'</div>';
   renderBar(); wire();
 }
 function renderStart(){
@@ -457,6 +465,45 @@ function byEvent(list){
     function(k){ var o = SIT_EVENTS[k] || SIT_SPECIAL[k]; return fill(T(W.onEvent), {e: o ? T(o) : T(W.none)}); });
   return renderGroups(g, 'life');
 }
+/* ---------------------------------------------------------------- browse and search
+   Spelling-tolerant: Latin text keeps only consonants after the first letter of each word ("yojna" and "yojana"
+   both become "yjn"); Devanagari keeps the consonant skeleton (vowel signs, nukta and nasal marks dropped). */
+function skel(t){
+  return String(t || '').toLowerCase()
+    .replace(/[\u0928\u092E]\u094D/g, '')                                   // न्/म् before a consonant ~ anusvara
+    .replace(/[\u093C\u0901-\u0903\u093E-\u094D\u0951-\u0954\u0962\u0963]/g, '')
+    .replace(/[^a-z0-9\u0900-\u097F\s]/g, ' ').replace(/w/g, 'v')
+    .replace(/\b([a-z])[aeiou]*([a-z]*)/g, function(_, f, rest){ return f + rest.replace(/[aeiouhy]/g, ''); })
+    .replace(/(.)\1+/g, '$1').replace(/\s+/g, ' ').trim();
+}
+var INDEX = null;
+function index(){
+  if (!INDEX) INDEX = S.map(function(s){ return { s: s, t: ' ' + skel([s.name, s.name_hi, s.sector, sectorName(s.sector), s.dept, s.benefit_short, s.nodal].join(' ')) + ' ' }; });
+  return INDEX;
+}
+function searchSchemes(q, sector, btype){
+  var toks = skel(q).split(' ').filter(Boolean);
+  return index().filter(function(e){
+    if (sector && e.s.sector !== sector) return false;
+    if (btype && e.s.btype !== btype) return false;
+    return toks.every(function(t){ return e.t.indexOf(t.length <= 2 ? ' ' + t + ' ' : ' ' + t) >= 0; });   // word prefix; whole word when short
+  }).map(function(e){ return e.s; });
+}
+function renderAll(){
+  var f = st.filter || (st.filter = { q: '', sector: '', btype: '', shown: 40 });
+  var sectors = []; S.forEach(function(s){ if (sectors.indexOf(s.sector) < 0) sectors.push(s.sector); }); sectors.sort();
+  var h = '<h1 class="q" id="qh" tabindex="-1">'+esc(T(W.allH))+'</h1><p class="hint">'+esc(T(W.allNote))+'</p>';
+  h += '<div class="search"><input type="search" id="q" value="'+esc(f.q)+'" placeholder="'+esc(T(W.searchPh))+'" aria-label="'+esc(T(W.allH))+'" autocomplete="off">';
+  h += '<select id="f-sector" aria-label="'+esc(T(W.allSectors))+'"><option value="">'+esc(T(W.allSectors))+'</option>'+sectors.map(function(k){ return '<option value="'+esc(k)+'"'+(f.sector === k ? ' selected' : '')+'>'+esc(sectorName(k))+'</option>'; }).join('')+'</select>';
+  h += '<select id="f-type" aria-label="'+esc(T(W.allTypes))+'"><option value="">'+esc(T(W.allTypes))+'</option>'+TYPES.map(function(o){ return '<option value="'+esc(o.v)+'"'+(f.btype === o.v ? ' selected' : '')+'>'+esc(T(o))+'</option>'; }).join('')+'</select></div>';
+  var hits = searchSchemes(f.q, f.sector, f.btype);
+  h += '<p class="secnote" aria-live="polite">'+esc(fill(T(W.nMatch), {n: hits.length}))+'</p>';
+  if (!hits.length) h += '<p class="empty">'+esc(T(W.noMatch))+'</p>';
+  h += '<ul class="list">'+hits.slice(0, f.shown).map(function(s){ var en = splitName(s.name);
+    return '<li><a href="#/scheme/'+esc(s.id)+'"><b>'+esc(lang === 'hi' ? s.name_hi : en.head)+'</b><small>'+esc(lang === 'hi' ? en.head : (en.tail || sectorName(s.sector)))+' · '+esc(sectorName(s.sector))+'</small></a></li>'; }).join('')+'</ul>';
+  if (hits.length > f.shown) h += '<button type="button" class="btn" id="b-more">'+esc(fill(T(W.showMore), {n: Math.min(40, hits.length - f.shown)}))+'</button>';
+  return h;
+}
 function renderScheme(){
   var s = S.filter(function(x){ return x.id === st.scheme; })[0];
   var h = '<h1 class="q" id="qh" tabindex="-1">'+esc(T(W.schemeH))+'</h1>';
@@ -485,6 +532,7 @@ function renderResults(){
   if (everyone.length) h += '<details class="lifebox"><summary>'+esc(T(W.everyoneH))+' ('+everyone.length+')</summary><p class="secnote">'+esc(T(W.everyoneNote))+'</p>'+bySector(everyone, 'elig')+'</details>';
   if (R.event.length) h += '<details class="lifebox"><summary>'+esc(T(W.lifeH))+' ('+R.event.length+')</summary><p class="secnote">'+esc(T(W.lifeNote))+'</p>'+byEvent(R.event)+'</details>';
   h += slip(yes, check, docs);
+  h += '<p class="noprint"><a class="plink" href="#/all">'+esc(T(W.browse))+' ↗</a></p>';
   return h + '<p class="foot">'+esc(T(W.foot))+'<br>'+esc(fill(T(W.dataLine), {d: (DATA.meta.built || '').split(' ')[0], n: DATA.meta.schemes}))+'</p>';
 }
 /* The printable slip: one or two pages a person can carry to the office. */
@@ -513,7 +561,8 @@ function waText(){
 }
 function renderBar(){
   var s = st.screen, h;
-  if (s === 'start') h = '<button type="button" class="btn primary" id="b-next"'+(S.length ? '' : ' disabled')+'>'+esc(T(S.length ? W.start : W.loading))+'</button>';
+  if (s === 'start') h = '<button type="button" class="btn" id="b-all"'+(S.length ? '' : ' disabled')+'>'+esc(T(W.browse))+'</button><button type="button" class="btn primary" id="b-next"'+(S.length ? '' : ' disabled')+'>'+esc(T(S.length ? W.start : W.loading))+'</button>';
+  else if (s === 'all') h = '<button type="button" class="btn primary" id="b-again">'+esc(T(W.findMine))+'</button>';
   else if (s === 'results') h = '<button type="button" class="btn" id="b-back">'+esc(T(W.back))+'</button><button type="button" class="btn primary" id="b-again">'+esc(T(W.again))+'</button>';
   else if (s === 'scheme') h = '<button type="button" class="btn primary" id="b-again">'+esc(T(W.findMine))+'</button>';
   else {
@@ -554,6 +603,16 @@ function wire(){
   if (n) n.onclick = function(){ if (st.screen === 'start'){ st.history = ['types']; go('types'); } else commit(); };
   var b = document.getElementById('b-back'); if (b) b.onclick = function(){ if (history.state && history.state.depth > 0) history.back(); else back(); };
   var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); remember(); window.scrollTo(0,0); };
+  var al = document.getElementById('b-all'); if (al) al.onclick = function(){ st.screen = 'all'; st.filter = null; render(); remember(); window.scrollTo(0,0); };
+  var q = document.getElementById('q');
+  if (q){
+    var refresh = function(){ st.filter.shown = 40; var y = window.scrollY, pos = q.selectionStart; render(); window.scrollTo(0, y);
+      var q2 = document.getElementById('q'); if (document.activeElement !== q2 && pos != null && st.filter.focus){ q2.focus({preventScroll:true}); try { q2.setSelectionRange(pos, pos); } catch (e) {} } };
+    q.addEventListener('input', function(){ st.filter.q = q.value; st.filter.focus = true; refresh(); remember(true); });
+    document.getElementById('f-sector').addEventListener('change', function(e){ st.filter.sector = e.target.value; st.filter.focus = false; refresh(); remember(true); });
+    document.getElementById('f-type').addEventListener('change', function(e){ st.filter.btype = e.target.value; st.filter.focus = false; refresh(); remember(true); });
+    var more = document.getElementById('b-more'); if (more) more.onclick = function(){ st.filter.shown += 40; var y = window.scrollY; render(); window.scrollTo(0, y); };
+  }
   var p = document.getElementById('b-print'); if (p) p.onclick = function(){ window.print(); };
   app.querySelectorAll('.say').forEach(function(b){ b.addEventListener('click', function(){ speak(b); }); });
   app.querySelectorAll('.chk input').forEach(function(c){ c.addEventListener('change', function(){ st.ticked[c.getAttribute('data-doc')] = c.checked; }); });
