@@ -109,6 +109,8 @@ h2.sec{font-size:24px;font-weight:800;color:var(--ink);margin:30px 0 4px}
 h3.sector{font-size:17px;font-weight:700;color:var(--muted);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
 .card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--paddy);border-radius:10px;padding:14px 16px;margin:0 0 12px;position:relative}
 .card.check,.card.cond{border-left-color:var(--haldi)}
+.card.info{border-left-color:var(--ink)}
+.plink{display:inline-block;margin-top:8px;font-size:15px;color:var(--ink)}
 .card.life{border-left-color:var(--ink-soft)}
 .card h4{margin:0;font-size:20px;line-height:1.25;font-weight:800;padding-right:92px}
 .card .alt{margin:2px 0 0;color:var(--muted);font-size:15px;padding-right:92px}
@@ -489,7 +491,10 @@ var W = {
   for1:{en:'needed for: {s}',hi:'इसके लिए: {s}'},
   slipTitle:{en:'My schemes – District Karnal',hi:'मेरी योजनाएँ – ज़िला करनाल'},
   slipDate:{en:'Printed {d}. Take this slip and the documents to the office or CSC.',hi:'{d} को प्रिंट। यह पर्ची और दस्तावेज़ कार्यालय या CSC पर ले जाएँ।'},
-  office:{en:'Office',hi:'कार्यालय'}, site:{en:'Check again at',hi:'दोबारा देखें'}
+  office:{en:'Office',hi:'कार्यालय'}, site:{en:'Check again at',hi:'दोबारा देखें'},
+  schemeH:{en:'Scheme',hi:'योजना'}, schemeNote:{en:'Conditions are shown as recorded. Answer the questions to see whether they apply to you.',hi:'शर्तें रिकॉर्ड अनुसार दिखाई गई हैं। जानने के लिए कि ये आप पर लागू हैं या नहीं, सवालों के जवाब दें।'},
+  findMine:{en:'Find my schemes',hi:'मेरी योजनाएँ खोजें'}, linkThis:{en:'Link to this scheme',hi:'इस योजना का लिंक'},
+  notFound:{en:'No scheme with this id.',hi:'इस आईडी की कोई योजना नहीं।'}
 };
 var REASON = {
   exclusion:{en:'Not for: {t}',hi:'इनके लिए नहीं: {t}'},
@@ -625,7 +630,40 @@ function draftFor(q){
   if (q === 'types') return v ? v.slice() : ['Individual','Household'];
   return Array.isArray(v) ? v.slice() : (v || null);
 }
-function go(q){ st.screen = q; st.draft = draftFor(q); st.err = ''; render(); window.scrollTo(0,0); var h = document.getElementById('qh'); if (h) h.focus({preventScroll:true}); }
+/* ---------------------------------------------------------------- history and addresses
+   Each screen is a browser history entry, so the phone's Back button moves between questions instead of
+   leaving the site. Results and single schemes have addresses in the fragment (#/...), which browsers never
+   send to a server: nothing a person enters leaves the phone. */
+function snapshot(){ return JSON.parse(JSON.stringify({ screen: st.screen, ans: st.ans, history: st.history, skipped: st.skipped, scheme: st.scheme || null })); }
+function b64(o){ return btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function unb64(t){ try { return JSON.parse(atob(t.replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; } }
+function urlFor(){
+  if (st.screen === 'start') return '#/';
+  if (st.screen === 'results') return '#/results/' + b64({ a: st.ans, h: st.history, k: st.skipped });
+  if (st.screen === 'scheme') return '#/scheme/' + encodeURIComponent(st.scheme);
+  return '#/q/' + (st.history.indexOf(st.screen) + 1);
+}
+function remember(replace){
+  var depth = (history.state && history.state.depth) || 0;
+  try { history[replace ? 'replaceState' : 'pushState']({ st: snapshot(), depth: replace ? depth : depth + 1 }, '', urlFor()); } catch (e) {}
+}
+function restore(snap){
+  st = { screen: snap.screen, ans: snap.ans || {}, history: snap.history || [], skipped: snap.skipped || {}, scheme: snap.scheme, draft: null, err: '', ticked: {} };
+  if (st.screen !== 'start' && st.screen !== 'results' && st.screen !== 'scheme') st.draft = draftFor(st.screen);
+}
+function fromHash(){
+  var h = location.hash, m;
+  if ((m = /^#\/results\/([\w-]+)$/.exec(h)) && (m = unb64(m[1])) && m.a && m.h) restore({ screen: 'results', ans: m.a, history: m.h, skipped: m.k });
+  else if ((m = /^#\/scheme\/([\w-]+)$/.exec(h))) restore({ screen: 'scheme', scheme: decodeURIComponent(m[1]) });
+  else reset();
+}
+window.addEventListener('popstate', function(e){
+  if (e.state && e.state.st) restore(e.state.st);
+  else if (/^#\//.test(location.hash) || !location.hash) fromHash();
+  else return;                                         // an in-page anchor such as #elig
+  render(); window.scrollTo(0,0);
+});
+function go(q){ st.screen = q; st.draft = draftFor(q); st.err = ''; render(); remember(); window.scrollTo(0,0); var h = document.getElementById('qh'); if (h) h.focus({preventScroll:true}); }
 function commit(){
   var q = st.screen, d = st.draft;
   if (q === 'about'){
@@ -642,8 +680,9 @@ function commit(){
   st.history = st.history.slice(0, i + 1);
   var n = E.nextQuestion(S, st.ans, asked());
   st.skipped = n.skipped;
+  remember(true);                            // keep this screen's answers in its history entry
   if (n.next){ st.history.push(n.next); go(n.next); }
-  else { st.screen = 'results'; st.err = ''; render(); window.scrollTo(0,0); }
+  else { st.screen = 'results'; st.err = ''; render(); remember(); window.scrollTo(0,0); }
 }
 function back(){
   if (st.screen === 'results'){ go(st.history[st.history.length - 1]); return; }
@@ -680,7 +719,7 @@ function render(){
   document.getElementById('l-hi').setAttribute('aria-pressed', lang === 'hi');
   document.getElementById('l-en').setAttribute('aria-pressed', lang === 'en');
   var s = st.screen;
-  app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : renderQ(s))+'</div>';
+  app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : s === 'scheme' ? renderScheme() : renderQ(s))+'</div>';
   renderBar(); wire();
 }
 function renderStart(){
@@ -780,7 +819,7 @@ function card(x, kind){
   if (s.link) h += '<h5>'+esc(T(W.linkH))+'</h5><p><a href="'+esc(s.link)+'" target="_blank" rel="noopener">'+esc(s.link.replace(/^https?:\/\//,''))+'</a></p>';
   if (s.docs && s.docs.length) h += '<h5>'+esc(T(W.docsList))+'</h5><ul>'+s.docs.map(function(d){ return '<li>'+esc(d)+'</li>'; }).join('')+'</ul>';
   if (s.elig_text) h += '<h5>'+esc(T(W.rulesH))+'</h5><p>'+esc(s.elig_text)+'</p>';
-  return h + '<p class="meta">'+esc(s.id)+' | '+esc(s.dept)+'</p></div></details></article>';
+  return h + '<p class="meta">'+esc(s.id)+' | '+esc(s.dept)+'</p><a class="plink" href="#/scheme/'+esc(s.id)+'">'+esc(T(W.linkThis))+' ↗</a></div></details></article>';
 }
 /* Most specific to the person first; verified before unverified; then by id for a stable order. */
 function bySpecificity(list){
@@ -808,6 +847,13 @@ function byEvent(list){
   var g = groupBy(bySpecificity(list), function(x){ return E.hardEvents(x.scheme)[0] || 'other'; },
     function(k){ var o = SIT_EVENTS[k] || SIT_SPECIAL[k]; return fill(T(W.onEvent), {e: o ? T(o) : T(W.none)}); });
   return renderGroups(g, 'life');
+}
+function renderScheme(){
+  var s = S.filter(function(x){ return x.id === st.scheme; })[0];
+  var h = '<h1 class="q" id="qh" tabindex="-1">'+esc(T(W.schemeH))+'</h1>';
+  if (!s) return h + '<p class="empty">'+esc(T(W.notFound))+'</p>';
+  h += '<p class="hint">'+esc(T(W.schemeNote))+'</p>' + card({ scheme: s, ev: E.evaluate(s, {}, {}) }, 'info');
+  return h + '<p class="foot">'+esc(T(W.foot))+'</p>';
 }
 var RES_CACHE;
 function renderResults(){
@@ -860,6 +906,7 @@ function renderBar(){
   var s = st.screen, h;
   if (s === 'start') h = '<button type="button" class="btn primary" id="b-next">'+esc(T(W.start))+'</button>';
   else if (s === 'results') h = '<button type="button" class="btn" id="b-back">'+esc(T(W.back))+'</button><button type="button" class="btn primary" id="b-again">'+esc(T(W.again))+'</button>';
+  else if (s === 'scheme') h = '<button type="button" class="btn primary" id="b-again">'+esc(T(W.findMine))+'</button>';
   else {
     var last = !E.nextQuestion(S, previewAns(), asked()).next;
     h = '<button type="button" class="btn" id="b-back">'+esc(T(W.back))+'</button><button type="button" class="btn primary" id="b-next">'+esc(T(last ? W.see : W.next))+'</button>';
@@ -896,15 +943,15 @@ function wire(){
   }
   var n = document.getElementById('b-next');
   if (n) n.onclick = function(){ if (st.screen === 'start'){ st.history = ['types']; go('types'); } else commit(); };
-  var b = document.getElementById('b-back'); if (b) b.onclick = back;
-  var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); window.scrollTo(0,0); };
+  var b = document.getElementById('b-back'); if (b) b.onclick = function(){ if (history.state && history.state.depth > 0) history.back(); else back(); };
+  var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); remember(); window.scrollTo(0,0); };
   var p = document.getElementById('b-print'); if (p) p.onclick = function(){ window.print(); };
   app.querySelectorAll('.chk input').forEach(function(c){ c.addEventListener('change', function(){ st.ticked[c.getAttribute('data-doc')] = c.checked; }); });
   var w = document.getElementById('b-wa'); if (w) w.href = 'https://wa.me/?text=' + encodeURIComponent(waText());
 }
 document.getElementById('l-hi').onclick = function(){ lang = 'hi'; render(); };
 document.getElementById('l-en').onclick = function(){ lang = 'en'; render(); };
-render();
+fromHash(); render(); remember(true);
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
   window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
 }
