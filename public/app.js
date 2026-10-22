@@ -24,6 +24,8 @@ var W = {
   updated:{en:'New: the scheme list was updated on {d}.',hi:'नया: योजना सूची {d} को अद्यतन हुई।'},
   loadFail:{en:'The scheme list could not be loaded. Check your connection and reload the page.',hi:'योजना सूची लोड नहीं हो सकी। इंटरनेट जाँचें और पेज दोबारा खोलें।'},
   loading:{en:'Loading…',hi:'लोड हो रहा है…'},
+  listen:{en:'Listen',hi:'सुनें'}, stopListen:{en:'Stop',hi:'रोकें'}, tsize:{en:'Larger text',hi:'बड़े अक्षर'},
+  noVoice:{en:'This phone has no voice for this language.',hi:'इस फ़ोन में इस भाषा की आवाज़ नहीं है।'},
   resH:{en:'Your schemes',hi:'आपकी योजनाएँ'},
   eligN:{en:'you appear eligible for',hi:'योजनाओं के लिए आप पात्र दिखते हैं'},
   checkN:{en:'to check with the office',hi:'योजनाओं की कार्यालय से पुष्टि करें'},
@@ -287,11 +289,13 @@ function progress(){
   return '<p class="qcount">'+fill(T(W.qof), {a:cur, b:total})+'</p><div class="ticks" aria-hidden="true">'+t+'</div>';
 }
 function render(){
+  if (canSpeak) try { speechSynthesis.cancel(); } catch (e) {}
   document.documentElement.lang = lang;
   document.title = T({en:'Meri Yojana – Karnal',hi:'मेरी योजना – करनाल'});
   document.getElementById('brand').innerHTML = esc(T(W.brand)) + '<small>'+esc(T(W.brandSub))+'</small>';
   document.getElementById('l-hi').setAttribute('aria-pressed', lang === 'hi');
   document.getElementById('l-en').setAttribute('aria-pressed', lang === 'en');
+  document.getElementById('tsize').setAttribute('aria-label', T(W.tsize));
   var s = st.screen;
   app.innerHTML = '<div class="screen">'+(s === 'start' ? renderStart() : s === 'results' ? renderResults() : s === 'scheme' ? renderScheme() : renderQ(s))+'</div>';
   renderBar(); wire();
@@ -305,7 +309,7 @@ function renderStart(){
   return h + '</section>';
 }
 function renderQ(q){
-  var d = st.draft, h = progress() + '<h1 class="q" id="qh" tabindex="-1">'+esc(T(Q[q].title))+'</h1><p class="hint">'+esc(T(Q[q].hint))+'</p>';
+  var d = st.draft, h = progress() + '<h1 class="q" id="qh" tabindex="-1">'+esc(T(Q[q].title))+'</h1><p class="hint">'+esc(T(Q[q].hint))+'</p>' + sayBtn();
   function list(arr, isOn, single){ return arr.map(function(o){ return optBtn(o, isOn(o.v), single); }).join(''); }
   function inArr(v){ return d && d.indexOf && d.indexOf(v) >= 0; }
   function eq(v){ return d === v; }
@@ -344,6 +348,34 @@ function renderQ(q){
   else if (q === 'residence') h += '<div class="opts">' + list(RES, eq, true) + '</div>';
   return h + '<p class="err" role="alert">'+esc(st.err)+'</p>';
 }
+/* ---------------------------------------------------------------- read aloud (Web Speech API; never blocks the page)
+   The button reads the question and its options, or the card's title, benefit and next step. */
+var canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+function sayBtn(){ return canSpeak ? '<button type="button" class="say" aria-pressed="false">🔊 '+esc(T(W.listen))+'</button>' : ''; }
+function voiceFor(){
+  var want = lang === 'hi' ? /^hi/i : /^en[-_]in/i, vs = speechSynthesis.getVoices();
+  return vs.filter(function(v){ return want.test(v.lang); })[0] || (lang === 'en' ? vs.filter(function(v){ return /^en/i.test(v.lang); })[0] : null);
+}
+function textToSay(btn){
+  var card = btn.closest('.card');
+  if (card){ return [card.querySelector('h4'), card.querySelector('.ben'), card.querySelector('.why'), card.querySelector('.next')]
+    .filter(Boolean).map(function(e){ return e.textContent; }).join('. '); }
+  var parts = [document.getElementById('qh'), app.querySelector('.hint')].filter(Boolean).map(function(e){ return e.textContent; });
+  app.querySelectorAll('.opt .t, .field label').forEach(function(e){ parts.push(e.textContent); });
+  return parts.join('. ');
+}
+function speak(btn){
+  if (btn.getAttribute('aria-pressed') === 'true'){ speechSynthesis.cancel(); return; }
+  var vs = speechSynthesis.getVoices(), v = voiceFor();
+  if (vs.length && !v){ btn.insertAdjacentHTML('afterend', '<span class="meta"> '+esc(T(W.noVoice))+'</span>'); btn.disabled = true; return; }
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(textToSay(btn).replace(/\s+/g, ' ').slice(0, 1500));
+  u.lang = lang === 'hi' ? 'hi-IN' : 'en-IN'; if (v) u.voice = v; u.rate = 0.9;
+  app.querySelectorAll('.say').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); b.innerHTML = '🔊 '+esc(T(W.listen)); });
+  btn.setAttribute('aria-pressed', 'true'); btn.innerHTML = '⏹ '+esc(T(W.stopListen));
+  u.onend = u.onerror = function(){ btn.setAttribute('aria-pressed', 'false'); btn.innerHTML = '🔊 '+esc(T(W.listen)); };
+  try { speechSynthesis.speak(u); } catch (e) { u.onend(); }
+}
 function sectorName(sec){ return lang === 'hi' && SECTOR[sec] ? SECTOR[sec] : sec; }
 /* Long English names are "Short name – explanation" or "Short name (detail)": show the short part as the title. */
 function splitName(n){
@@ -380,6 +412,7 @@ function card(x, kind){
   var h = '<article class="card '+kind+'" id="s-'+esc(s.id)+'"><span class="stamp'+(s.verified?'':' pending')+'">'+esc(T(s.verified ? W.verified : W.pending))+'</span>';
   h += '<h4>'+esc(title)+'</h4>'+(alt?'<p class="alt">'+esc(alt)+'</p>':'');
   if (s.benefit_short || s.benefit) h += '<p class="ben">'+esc(benefitLine(s))+'</p>';
+  h += sayBtn();
   if (ev.window) h += '<span class="window">'+esc(fill(T(W.applyWithin), {w: ev.window}))+'</span>';
   var ms = (ev.slabs || []).filter(function(z){ return z.match; });
   if (ms.length && ms.length < ev.slabs.length) h += '<ul class="slabs">'+ms.map(function(z){ return '<li class="m">'+esc(z.label)+(z.benefit?' – '+esc(z.benefit):'')+'</li>'; }).join('')+'</ul>';
@@ -522,9 +555,19 @@ function wire(){
   var b = document.getElementById('b-back'); if (b) b.onclick = function(){ if (history.state && history.state.depth > 0) history.back(); else back(); };
   var g = document.getElementById('b-again'); if (g) g.onclick = function(){ reset(); render(); remember(); window.scrollTo(0,0); };
   var p = document.getElementById('b-print'); if (p) p.onclick = function(){ window.print(); };
+  app.querySelectorAll('.say').forEach(function(b){ b.addEventListener('click', function(){ speak(b); }); });
   app.querySelectorAll('.chk input').forEach(function(c){ c.addEventListener('change', function(){ st.ticked[c.getAttribute('data-doc')] = c.checked; }); });
   var w = document.getElementById('b-wa'); if (w) w.href = 'https://wa.me/?text=' + encodeURIComponent(waText());
 }
+var tsize = 0;
+function applySize(){
+  document.documentElement.className = tsize ? 'big' + tsize : '';
+  document.getElementById('tsize').setAttribute('aria-pressed', tsize ? 'true' : 'false');
+  document.getElementById('tsize').textContent = tsize === 0 ? 'अ+' : tsize === 1 ? 'अ++' : 'अ';
+}
+try { tsize = parseInt(localStorage.getItem('my-text-size') || '0', 10) || 0; } catch (e) {}
+applySize();
+document.getElementById('tsize').onclick = function(){ tsize = (tsize + 1) % 3; applySize(); try { localStorage.setItem('my-text-size', String(tsize)); } catch (e) {} };
 document.getElementById('l-hi').onclick = function(){ lang = 'hi'; render(); };
 document.getElementById('l-en').onclick = function(){ lang = 'en'; render(); };
 var updatedSince = false, loadError = false;
