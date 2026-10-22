@@ -1,9 +1,12 @@
 /* Offline support: the site keeps working after one visit, even without internet.
-   Pages: network first (always the latest when online), saved copy when offline.
+   Page, code and the scheme list: network first (always the latest when online), saved copy when offline.
    Fonts and icons: saved copy first. */
 'use strict';
-var VERSION = 'meri-yojana-v1';
-var CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+var VERSION = 'meri-yojana-v2';
+var CORE = ['./', 'index.html', 'style.css', 'engine.js', 'app.js', 'data.json', 'manifest.webmanifest',
+  'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
+  'fonts/mukta-400-devanagari.woff2', 'fonts/mukta-400-latin.woff2', 'fonts/mukta-700-devanagari.woff2', 'fonts/mukta-700-latin.woff2'];
+var FRESH = /\/(index\.html|style\.css|engine\.js|app\.js|data\.json)$/;
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));
@@ -17,16 +20,14 @@ function save(req, res) { if (res && res.ok) { var copy = res.clone(); caches.op
 
 self.addEventListener('fetch', function (e) {
   var req = e.request, url = new URL(req.url);
-  if (req.method !== 'GET') return;
-  if (req.mode === 'navigate' || (url.origin === location.origin && /\.html?$/.test(url.pathname))) {
+  if (req.method !== 'GET' || url.origin !== location.origin) return;
+  if (req.mode === 'navigate' || FRESH.test(url.pathname)) {
     e.respondWith(fetch(req).then(function (res) { return save(req, res); })
-      .catch(function () { return caches.match(req).then(function (r) { return r || caches.match('index.html'); }); }));
+      .catch(function () { return caches.match(req, { ignoreSearch: true }).then(function (r) { return r || (req.mode === 'navigate' ? caches.match('index.html') : Response.error()); }); }));
     return;
   }
-  if (url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
-    e.respondWith(caches.match(req).then(function (hit) {
-      var net = fetch(req).then(function (res) { return save(req, res); }).catch(function () { return hit; });
-      return hit || net;
-    }));
-  }
+  e.respondWith(caches.match(req).then(function (hit) {
+    var net = fetch(req).then(function (res) { return save(req, res); }).catch(function () { return hit; });
+    return hit || net;
+  }));
 });

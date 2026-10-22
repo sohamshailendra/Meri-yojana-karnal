@@ -1,22 +1,31 @@
 # Meri Yojana – Karnal • मेरी योजना – करनाल
 
-Bilingual (हिन्दी / English) scheme finder for District Karnal. Citizens answer up to 8 questions and see the
-Central and Haryana Government schemes they are eligible for, the ones to check, and a documents checklist.
-Nothing is saved or sent anywhere: all matching runs in the browser.
+Bilingual (हिन्दी / English) scheme finder for District Karnal. Citizens answer about six questions and see the
+Central and Haryana Government schemes they are eligible for, the ones to check, one next step per scheme and a
+documents checklist. Nothing is saved or sent anywhere: all matching runs in the browser.
 
-- `public/index.html`: the whole site (engine + scheme data from `Karnal_Schemes_Master` + interface)
-- `public/manifest.webmanifest`, `public/sw.js`, `public/icon*`: install-as-app and offline support
-- `test/check.js`: sanity checks; also the Render build command, so a broken update never goes live
+| File | What it is |
+|---|---|
+| `public/index.html` | The page: head, a static Hindi start screen (paints before anything else loads), script tags |
+| `public/style.css` | Styles, light and dark, print slip, self-hosted Mukta font faces |
+| `public/engine.js` | Matching and question engine (`YojanaEngine`); also loads in Node for the tests |
+| `public/app.js` | Interface: words in both languages, questions, results, history, print, WhatsApp |
+| `public/data.json` | The 258 schemes, exported from `Karnal_Schemes_Master` (see **Updating the data**) |
+| `public/sw.js`, `manifest.webmanifest`, `icon*`, `fonts/` | Install-as-app, offline use, fonts |
+| `test/check.js` | Sanity checks; the Render build command, so a broken update never goes live |
+| `test/engine.test.js` | Snapshot of the engine's verdicts for 40 answer profiles |
+| `scripts/import-export.js` | Pulls a new scheme list out of an exported page into `data.json` |
+| `AUDIT.md`, `DATA-ISSUES.md`, `prompts/` | The audit this work started from, data questions for the district team, the improvement prompt |
 
 ```bash
-node test/check.js                    # run the checks
-npx serve public                      # or: python3 -m http.server -d public 8000
+node test/check.js                    # run every check (also runs the engine snapshot)
+npx serve public                      # local server with gzip, like Render; then open http://localhost:3000
 ```
 
 ## Deploy on Render
 
 **Blueprint (recommended):** Render dashboard → **New → Blueprint** → choose this repository. It reads
-`render.yaml` and creates the static site `meri-yojana-karnal`.
+`render.yaml` and creates the static site `meri-yojana-karnal` with the security, CSP and cache headers.
 
 **Or by hand:** **New → Static Site** → this repository, then:
 
@@ -27,13 +36,23 @@ npx serve public                      # or: python3 -m http.server -d public 800
 | Build Command | `node test/check.js` |
 | Publish Directory | `public` |
 
-The site is free to host as a static site and gets HTTPS on `https://<name>.onrender.com`.
-To use your own domain (e.g. a `karnal.gov.in` subdomain), add it under **Settings → Custom Domains** and create the
-CNAME record Render shows.
+The site is free to host as a static site and gets HTTPS on `https://<name>.onrender.com`. To use your own
+domain (e.g. a `karnal.gov.in` subdomain), add it under **Settings → Custom Domains** and create the CNAME
+record Render shows.
 
-## Updating the scheme data
+## Updating the data
 
-Replace `public/index.html` with the newly exported page, keep the extra lines in `<head>` (description,
-theme-color, icons, manifest) and the service-worker registration at the end of the last `<script>`, run
-`node test/check.js`, then push. Render redeploys automatically. Visitors who installed the app get the new data the
-next time they open it online.
+1. Export the page from the scheme master as before (the one-file HTML with the data inside), then:
+   ```bash
+   node scripts/import-export.js path/to/Meri_Yojana_Karnal.html
+   ```
+   It rewrites `public/data.json` and lists schemes added or removed.
+2. Re-apply the corrections listed under *Corrections already made in the page* in `DATA-ISSUES.md`, unless the
+   master sheet already has them.
+3. `node test/check.js`. If the engine's verdicts changed, it prints every difference; when they are intended,
+   run `node test/engine.test.js --update` and mention the differences in the commit.
+4. Push. Render redeploys; visitors see "the scheme list was updated on …" on their next online visit, and
+   the installed app refreshes itself.
+
+If the master sheet gains Hindi columns, export them as `benefit_hi`, `benefit_short_hi`, `how_hi`, `docs_hi`
+(list) and `nodal_hi`; the page will prefer them automatically.

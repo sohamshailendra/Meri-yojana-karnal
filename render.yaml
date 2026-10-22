@@ -20,6 +20,14 @@ services:
       - path: /*
         name: Permissions-Policy
         value: camera=(), microphone=(), geolocation=()
+      # Only the site's own files may run or load; nothing is fetched from anywhere else
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'self'; object-src 'none'"
+      # Fonts never change under this name
+      - path: /fonts/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
       # Pages and the service worker are always re-checked, so data updates reach people straight away
       - path: /
         name: Cache-Control
@@ -28,5 +36,17 @@ services:
         name: Cache-Control
         value: no-cache
       - path: /sw.js
+        name: Cache-Control
+        value: no-cache
+      - path: /app.js
+        name: Cache-Control
+        value: no-cache
+      - path: /engine.js
+        name: Cache-Control
+        value: no-cache
+      - path: /style.css
+        name: Cache-Control
+        value: no-cache
+      - path: /data.json
         name: Cache-Control
         value: no-cache

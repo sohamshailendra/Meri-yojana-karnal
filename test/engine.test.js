@@ -4,14 +4,9 @@
      node test/engine.test.js            # compare
      node test/engine.test.js --update   # rewrite the snapshot (after an intended change)         */
 'use strict';
-var fs = require('fs'), path = require('path'), vm = require('vm'), assert = require('assert');
-var html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
-var src = /<script>([\s\S]*?)<\/script>/.exec(html)[1];
-var sandbox = {}; sandbox.window = sandbox; vm.runInNewContext(src, sandbox);
-var E = sandbox.YojanaEngine;
-var dataSrc = fs.existsSync(path.join(__dirname, '..', 'public', 'data.json'))
-  ? fs.readFileSync(path.join(__dirname, '..', 'public', 'data.json'), 'utf8') : /^var DATA = (\{.*\});\s*$/m.exec(html)[1];
-var S = JSON.parse(dataSrc).schemes;
+var fs = require('fs'), path = require('path'), assert = require('assert');
+var E = require(path.join(__dirname, '..', 'public', 'engine.js'));
+var S = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public', 'data.json'), 'utf8')).schemes;
 var KEY = { category: 'cats', income: 'income', occupation: 'occ', 'class': 'cls', disability: 'dis', event: 'events', residence: 'res' };
 
 /* ------------------------------------------------------------ profiles */
