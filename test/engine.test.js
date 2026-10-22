@@ -65,7 +65,7 @@ function run(full) {
   var ans = { types: full.types }, asked = [], seq = [], q;
   while ((q = E.nextQuestion(S, ans, asked)).next) {
     var k = q.next; asked.push(k); seq.push(k);
-    if (k === 'about') { ans.gender = full.gender; ans.age = full.age; ans.about_done = true; }
+    if (k === 'about') { ans.gender = full.gender; ans.age = full.age; ans.about_done = true; ans.dis = full.dis; } // the page asks disability with gender and age
     else ans[KEY[k]] = full[KEY[k]];
   }
   var R = E.results(S, ans, q.skipped), out = {};

@@ -326,7 +326,13 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
     disability: function (C) { return C.some(function (s) { return s.dis_min != null ||
         (s.gaps || []).some(function (g) { return g.key === 'disability'; }); }); },
     event: function (C) { return eventOptions(C).length > 0; },
-    residence: function (C) { return C.some(function (s) { return s.res_years != null; }); }
+    residence: function (C, ans) { return C.some(function (s) { return s.res_years != null && evaluate(s, ans, {}).status !== 'event'; }); }
+  };
+  /* The page may collect an answer on another screen (disability is asked with gender and age). */
+  var ANSWERED = {
+    about: function (a) { return !!a.about_done; }, category: function (a) { return !!a.cats; }, income: function (a) { return !!a.income; },
+    occupation: function (a) { return !!a.occ; }, 'class': function (a) { return !!a.cls; }, disability: function (a) { return !!a.dis; },
+    event: function (a) { return !!a.events; }, residence: function (a) { return !!a.res; }
   };
   function occOptions(C) {
     var seen = {}, out = [];
@@ -346,7 +352,7 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
     var skipped = {};
     for (var i = 0; i < ORDER.length; i++) {
       var q = ORDER[i];
-      if (asked.indexOf(q) >= 0) continue;
+      if (asked.indexOf(q) >= 0 || ANSWERED[q](ans)) continue;
       if (!RELEVANT[q](C, ans)) continue;
       if (used >= MAX_SCREENS) { skipped[q] = true; continue; }
       return { next: q, skipped: skipped, candidates: C };
@@ -356,7 +362,7 @@ summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:
   /* Upper bound on remaining screens, for the progress bar */
   function remainingEstimate(schemes, ans, asked) {
     var C = candidates(schemes, ans), n = 0;
-    ORDER.forEach(function (q) { if (asked.indexOf(q) < 0 && RELEVANT[q](C, ans)) n++; });
+    ORDER.forEach(function (q) { if (asked.indexOf(q) < 0 && !ANSWERED[q](ans) && RELEVANT[q](C, ans)) n++; });
     return Math.min(n, MAX_SCREENS - 1 - asked.length);
   }
 
@@ -416,7 +422,7 @@ var W = {
   heroSub:{en:'Find the government schemes meant for you',hi:'जानिए कौन-सी सरकारी योजनाएँ आपके लिए हैं'},
   heroP:{en:'Answer a few simple questions. The questions change with your answers, so you are only asked what matters for you.',
          hi:'कुछ आसान सवालों के जवाब दीजिए। सवाल आपके जवाबों के अनुसार बदलते हैं, इसलिए केवल वही पूछा जाएगा जो आपके काम का है।'},
-  f1:{en:'At most 8 questions',hi:'अधिकतम 8 सवाल'},
+  f1:{en:'Usually 6 short questions, never more than 8',hi:'आम तौर पर 6 छोटे सवाल, 8 से ज़्यादा कभी नहीं'},
   f2:{en:'Nothing you enter is saved or sent anywhere',hi:'आपकी कोई जानकारी न सहेजी जाती है, न कहीं भेजी जाती है'},
   f3:{en:'Central and Haryana Government schemes available in Karnal',hi:'करनाल में उपलब्ध केंद्र और हरियाणा सरकार की योजनाएँ'},
   start:{en:'Start',hi:'शुरू करें'}, next:{en:'Next',hi:'आगे'}, back:{en:'Back',hi:'पीछे'}, see:{en:'See my schemes',hi:'मेरी योजनाएँ देखें'},
@@ -561,7 +567,7 @@ var RES = [
 var Q = {
   types:{title:{en:'Who are you looking for schemes for?',hi:'आप किसके लिए योजनाएँ देख रहे हैं?'},
          hint:{en:'Choose all that apply. Person and family are already ticked because they cover everyone.',hi:'जो-जो लागू हों, सभी चुनें। व्यक्ति और परिवार पहले से चुने हैं क्योंकि ये सभी पर लागू होते हैं।'}},
-  about:{title:{en:'About the person',hi:'व्यक्ति के बारे में'},hint:{en:'Some schemes are only for women, or for certain ages.',hi:'कुछ योजनाएँ केवल महिलाओं या किसी आयु-वर्ग के लिए हैं।'}},
+  about:{title:{en:'About the person',hi:'व्यक्ति के बारे में'},hint:{en:'Some schemes are only for women, for certain ages, or for persons with a disability.',hi:'कुछ योजनाएँ केवल महिलाओं, किसी आयु या दिव्यांग व्यक्तियों के लिए हैं।'}},
   category:{title:{en:'Does the family belong to any of these?',hi:'क्या परिवार इनमें से किसी वर्ग में आता है?'},hint:{en:'Choose all that apply – a caste category and a ration card can both be ticked.',hi:'जो लागू हों सभी चुनें – जाति वर्ग और राशन कार्ड दोनों चुने जा सकते हैं।'}},
   income:{title:{en:'Yearly family income',hi:'परिवार की वार्षिक आय'},hint:{en:'As shown in the Parivar Pehchan Patra, if you know it.',hi:'परिवार पहचान पत्र में दर्ज आय, यदि पता हो।'}},
   occupation:{title:{en:'Do any of these apply to you or your family?',hi:'क्या इनमें से कुछ आप या आपके परिवार पर लागू है?'},hint:{en:'Choose all that apply.',hi:'जो-जो लागू हों, सभी चुनें।'}},
@@ -580,9 +586,9 @@ var SINGLE = {income:1,'class':1,disability:1,residence:1};
 var EXCLUSIVE = {GEN:1,UNK:1,none:1};
 
 function asked(){ return st.history.filter(function(q){ return q !== 'types'; }); }
-function forget(q){ if (q === 'about'){ delete st.ans.gender; delete st.ans.age; delete st.ans.about_done; } else delete st.ans[KEY[q]]; }
+function forget(q){ if (q === 'about'){ delete st.ans.gender; delete st.ans.age; delete st.ans.about_done; delete st.ans.dis; } else delete st.ans[KEY[q]]; }
 function draftFor(q){
-  if (q === 'about') return { gender: st.ans.gender || null, age: st.ans.age != null ? String(st.ans.age) : '' };
+  if (q === 'about') return { gender: st.ans.gender || null, age: st.ans.age != null ? String(st.ans.age) : '', dis: st.ans.dis || null };
   var v = st.ans[KEY[q]];
   if (q === 'types') return v ? v.slice() : ['Individual','Household'];
   return Array.isArray(v) ? v.slice() : (v || null);
@@ -591,10 +597,10 @@ function go(q){ st.screen = q; st.draft = draftFor(q); st.err = ''; render(); wi
 function commit(){
   var q = st.screen, d = st.draft;
   if (q === 'about'){
-    if (!d.gender){ st.err = T(W.needAnswer); return render(); }
+    if (!d.gender || !d.dis || d.dis === 'yes'){ st.err = T(W.needAnswer); return render(); }
     var a = d.age.trim() === '' ? null : parseInt(d.age, 10);
     if (a != null && (isNaN(a) || a > 120)){ st.err = T({en:'Enter an age between 0 and 120, or leave it blank.',hi:'0 से 120 के बीच आयु लिखें, या खाली छोड़ें।'}); return render(); }
-    st.ans.gender = d.gender; st.ans.age = a; st.ans.about_done = true;
+    st.ans.gender = d.gender; st.ans.age = a; st.ans.about_done = true; st.ans.dis = d.dis;
   } else {
     if (d == null || (Array.isArray(d) && !d.length)){ st.err = T(W.needAnswer); return render(); }
     st.ans[KEY[q]] = d;
@@ -664,6 +670,12 @@ function renderQ(q){
       '<div class="field"><label for="age">'+esc(T({en:'Age in years (leave blank if not sure)',hi:'आयु वर्षों में (पक्का न हो तो खाली छोड़ें)'}))+'</label>'+
       '<div class="age"><button type="button" data-age="-1" aria-label="−1">−</button><input id="age" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" value="'+esc(d.age)+'">'+
       '<button type="button" data-age="1" aria-label="+1">+</button></div></div>';
+    var yn = [{v:'no',en:'No',hi:'नहीं'},{v:'yes',en:'Yes',hi:'हाँ'}];
+    h += '<div class="field"><label id="dl">'+esc(T(Q.disability.title))+'</label><div class="opts grid" role="group" aria-labelledby="dl">'+
+      yn.map(function(o){ return '<button type="button" class="opt single" data-dis="'+o.v+'" aria-pressed="'+((o.v === 'no' ? d.dis === 'none' : (d.dis && d.dis !== 'none')) ? 'true' : 'false')+'"><span class="box" aria-hidden="true"></span><span class="t">'+esc(T(o))+'</span></button>'; }).join('')+'</div>';
+    if (d.dis && d.dis !== 'none') h += '<p class="hint" style="margin:10px 0 8px">'+esc(T(Q.disability.hint))+'</p><div class="opts">'+
+      list(DIS.filter(function(o){ return o.v !== 'none'; }), function(v){ return d.dis === v; }, true)+'</div>';
+    h += '</div>';
   }
   else if (q === 'category') h += '<div class="opts">' + list(CATS, inArr) + '</div>';
   else if (q === 'income') h += '<div class="opts">' + list(INCOME, eq, true) + '</div>';
@@ -779,8 +791,12 @@ function renderBar(){
 function wire(){
   app.querySelectorAll('.opt').forEach(function(b){
     b.addEventListener('click', function(){
-      var q = st.screen, v = b.getAttribute('data-v');
-      if (q === 'about') st.draft.gender = v;
+      var q = st.screen, v = b.getAttribute('data-v'), dv = b.getAttribute('data-dis');
+      if (q === 'about'){
+        if (dv) st.draft.dis = dv === 'no' ? 'none' : (st.draft.dis && st.draft.dis !== 'none' ? st.draft.dis : 'yes');
+        else if (DIS.some(function(o){ return o.v === v; }) && v !== 'none') st.draft.dis = v;
+        else st.draft.gender = v;
+      }
       else if (SINGLE[q]) st.draft = v;
       else {
         var d = (st.draft || []).slice(), i = d.indexOf(v);

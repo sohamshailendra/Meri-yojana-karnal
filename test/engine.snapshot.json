@@ -1,6 +1,6 @@
 {
  "widow62_bpl": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 15,
   "check": 15,
@@ -75,10 +75,8 @@
   }
  },
  "sc_student_c11": {
-  "questions": "about > category > income > occupation > class > disability > event",
-  "skipped": [
-   "residence"
-  ],
+  "questions": "about > category > income > occupation > class > event > residence",
+  "skipped": [],
   "eligible": 22,
   "check": 17,
   "event": 23,
@@ -119,7 +117,7 @@
    "EDU-025": "eligible",
    "RD-001": "check [gap]",
    "RCS-001": "check [gap]",
-   "SEWA-007": "check [res_unknown,gap]",
+   "SEWA-007": "check [gap]",
    "ITI-003": "check [gap]",
    "HED-003": "check [exclusion]",
    "HED-007": "check [exclusion]",
@@ -160,7 +158,7 @@
   }
  },
  "farmer45": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 38,
   "check": 14,
@@ -248,7 +246,7 @@
   }
  },
  "bocw38_bca": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 17,
   "check": 11,
@@ -322,7 +320,7 @@
   }
  },
  "woman30_dis60": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 9,
   "check": 8,
@@ -355,8 +353,8 @@
    "WCD-003": "event",
    "WCD-005": "event [cat_note]",
    "WCD-006": "event [exclusion]",
-   "SEWA-002": "event [exclusion]",
-   "SEWA-003": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
+   "SEWA-003": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion]",
    "HLTH-002": "event",
    "HLTH-004": "event",
@@ -383,7 +381,7 @@
   }
  },
  "mother24_birth": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 9,
   "check": 10,
@@ -417,7 +415,7 @@
    "WCD-002": "event",
    "WCD-003": "event",
    "WCD-004": "event",
-   "SEWA-002": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion,gap]",
    "HLTH-002": "event",
    "HLTH-004": "event",
@@ -439,7 +437,7 @@
   }
  },
  "vendor50_unk": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 7,
   "check": 13,
@@ -491,7 +489,7 @@
   }
  },
  "esm58_marriage": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 6,
   "check": 8,
@@ -531,7 +529,7 @@
   }
  },
  "msme_woman35": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 8,
   "check": 9,
@@ -584,7 +582,7 @@
   }
  },
  "newborn_aay": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 18,
   "check": 13,
@@ -657,7 +655,7 @@
   }
  },
  "all_unknown": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 6,
   "check": 31,
@@ -742,7 +740,7 @@
   }
  },
  "age0": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 6,
   "check": 9,
@@ -791,7 +789,7 @@
   }
  },
  "age120": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 7,
   "check": 13,
@@ -827,7 +825,7 @@
    "WCD-003": "event",
    "WCD-005": "event [cat_note]",
    "WCD-006": "event [exclusion]",
-   "SEWA-002": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion,gap]",
    "HLTH-002": "event",
    "HLTH-004": "event",
@@ -852,7 +850,7 @@
   }
  },
  "age_blank_rich": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 6,
   "check": 9,
@@ -897,7 +895,7 @@
   }
  },
  "income_border18": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 13,
   "check": 14,
@@ -943,7 +941,7 @@
    "WCD-003": "event",
    "WCD-005": "event [cat_note]",
    "WCD-006": "event [exclusion]",
-   "SEWA-002": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion,gap]",
    "HLTH-001": "event [gap]",
    "HLTH-002": "event",
@@ -969,7 +967,7 @@
   }
  },
  "income_border30": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 7,
   "check": 8,
@@ -1014,7 +1012,7 @@
   }
  },
  "dis_border40": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 9,
   "check": 6,
@@ -1061,7 +1059,7 @@
   }
  },
  "dis70": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 13,
   "check": 10,
@@ -1105,8 +1103,8 @@
    "WCD-004": "event",
    "DWO-002": "event",
    "DWO-003": "event",
-   "SEWA-003": "event [exclusion]",
-   "SEWA-009": "event [exclusion,gap]",
+   "SEWA-003": "event [res_unknown,exclusion]",
+   "SEWA-009": "event [res_unknown,exclusion,gap]",
    "HLTH-002": "event",
    "HLTH-004": "event",
    "TPT-001": "event",
@@ -1127,11 +1125,11 @@
   }
  },
  "new_resident": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 6,
   "check": 9,
-  "event": 25,
+  "event": 26,
   "docs": [
    "ppp",
    "aadhaar"
@@ -1156,6 +1154,7 @@
    "WCD-003": "event",
    "WCD-005": "event [cat_note]",
    "WCD-006": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion,gap]",
    "HLTH-002": "event",
    "HLTH-004": "event",
@@ -1180,7 +1179,7 @@
   }
  },
  "every_event": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 26,
   "check": 16,
@@ -1241,7 +1240,7 @@
   }
  },
  "every_category": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 18,
   "check": 13,
@@ -1320,7 +1319,7 @@
   }
  },
  "every_occ": {
-  "questions": "about > category > income > occupation > class > disability > event",
+  "questions": "about > category > income > occupation > class > event",
   "skipped": [],
   "eligible": 70,
   "check": 33,
@@ -1486,7 +1485,7 @@
   }
  },
  "student_c1": {
-  "questions": "about > category > income > occupation > class > disability > event",
+  "questions": "about > category > income > occupation > class > event",
   "skipped": [],
   "eligible": 6,
   "check": 5,
@@ -1516,7 +1515,7 @@
   }
  },
  "student_c8_dis": {
-  "questions": "about > category > income > occupation > class > disability",
+  "questions": "about > category > income > occupation > class",
   "skipped": [],
   "eligible": 6,
   "check": 6,
@@ -1546,7 +1545,7 @@
   }
  },
  "student_iti": {
-  "questions": "about > category > income > occupation > class > disability > event",
+  "questions": "about > category > income > occupation > class > event",
   "skipped": [],
   "eligible": 13,
   "check": 4,
@@ -1586,7 +1585,7 @@
   }
  },
  "student_pg_ews": {
-  "questions": "about > category > income > occupation > class > disability > event",
+  "questions": "about > category > income > occupation > class > event",
   "skipped": [],
   "eligible": 4,
   "check": 4,
@@ -1614,10 +1613,8 @@
   }
  },
  "student_phd": {
-  "questions": "about > category > income > occupation > class > disability > event",
-  "skipped": [
-   "residence"
-  ],
+  "questions": "about > category > income > occupation > class > event",
+  "skipped": [],
   "eligible": 10,
   "check": 6,
   "event": 23,
@@ -1745,7 +1742,7 @@
   }
  },
  "tree_owner": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 35,
   "check": 9,
@@ -1823,7 +1820,7 @@
   }
  },
  "hlwb_worker": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 8,
   "check": 7,
@@ -1860,7 +1857,7 @@
   }
  },
  "worker_death": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 21,
   "check": 14,
@@ -1926,7 +1923,7 @@
   }
  },
  "journalist": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 7,
   "check": 3,
@@ -1963,10 +1960,8 @@
   }
  },
  "sports_youth": {
-  "questions": "about > category > income > occupation > class > disability > event",
-  "skipped": [
-   "residence"
-  ],
+  "questions": "about > category > income > occupation > class > event > residence",
+  "skipped": [],
   "eligible": 14,
   "check": 8,
   "event": 24,
@@ -1997,7 +1992,7 @@
    "SCI-003": "eligible",
    "EDU-025": "eligible",
    "RCS-001": "check [gap]",
-   "SEWA-007": "check [res_unknown,gap]",
+   "SEWA-007": "check [gap]",
    "ITI-003": "check [gap]",
    "SPT-003": "check [gap]",
    "SPT-004": "check [exclusion]",
@@ -2046,7 +2041,7 @@
   }
  },
  "household_only": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event > residence",
   "skipped": [],
   "eligible": 10,
   "check": 5,
@@ -2083,7 +2078,7 @@
   }
  },
  "freedom_dep": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 8,
   "check": 3,
@@ -2114,7 +2109,7 @@
   }
  },
  "acid_survivor": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 7,
   "check": 4,
@@ -2138,7 +2133,7 @@
    "WCD-002": "event",
    "WCD-004": "event",
    "WCD-006": "event [exclusion]",
-   "SEWA-002": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "HLTH-002": "event",
    "TPT-001": "event",
    "SEWA-012": "event",
@@ -2158,7 +2153,7 @@
   }
  },
  "defence_serving": {
-  "questions": "about > category > income > occupation > disability > event",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 8,
   "check": 7,
@@ -2202,7 +2197,7 @@
   }
  },
  "kashmiri": {
-  "questions": "about > category > income > occupation > disability > event > residence",
+  "questions": "about > category > income > occupation > event",
   "skipped": [],
   "eligible": 11,
   "check": 11,
@@ -2239,7 +2234,7 @@
    "WCD-003": "event",
    "WCD-005": "event [cat_note]",
    "WCD-006": "event [exclusion]",
-   "SEWA-002": "event [exclusion]",
+   "SEWA-002": "event [res_unknown,exclusion]",
    "SEWA-008": "event [exclusion,gap]",
    "HLTH-002": "event",
    "HLTH-004": "event",
